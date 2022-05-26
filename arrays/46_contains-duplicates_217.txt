@@ -1,0 +1,65 @@
+217. Contains Duplicate
+
+Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.
+
+Input: nums = [1,2,3,1]
+Output: true
+
+Input: nums = [1,2,3,4]
+Output: false
+
+Link: https://leetcode.com/problems/contains-duplicate/
+
+my first solution
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        arr = []
+        for num in nums:
+            if num in arr:
+                return True
+            arr.append(num)
+        return False
+           
+result - 65/69 cases passed. TLE problem.
+
+my second solution
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        l = len(nums)
+        s = len(set(nums))
+        if l == s:
+            return False
+        else:
+            return True
+
+result - accepted, 530ms, 26mb. 
+
+my third solution
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        hashmap = {}
+        for index in range(len(nums)):
+            if nums[index] in hashmap:
+                return True
+            hashmap[nums[index]]=index
+        return False
+
+result - accepted, 546ms, 25.8mb.
+
+faster solution (online)
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        s = set()
+        for num in nums:
+            if num not in s:
+                s.add(num)
+            else:
+                return True
+        return False
+
+result - accepted, 456ms, 26mb.
+
+one liner,
+class Solution:
+    def containsDuplicate(self, nums: List[int]) -> bool:
+        return len(nums) != len(set(nums))

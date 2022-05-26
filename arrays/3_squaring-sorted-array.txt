@@ -1,0 +1,46 @@
+Given an integer array nums sorted in non-decreasing order, return an array of the squares of each number sorted in non-decreasing order.
+
+Input: nums = [-4,-1,0,3,10]
+Output: [0,1,9,16,100]
+Explanation: After squaring, the array becomes [16,1,0,9,100].
+After sorting, it becomes [0,1,9,16,100].
+
+Input: nums = [-7,-3,2,3,11]
+Output: [4,9,9,49,121]
+
+my first solution (+ one liner)
+
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        return sorted([num**2 for num in nums])
+
+accepted - Runtime: 357 ms (28%)  Memory Usage: 16.3 MB (13%)
+
+better solution 
+#inspired from internet, purely O(n)
+
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        result = [0]*len(nums)
+        left_pointer = 0
+        right_pointer = len(nums)-1
+        for i in range(len(nums)-1,-1,-1): # traverse the array in reverse
+            if abs(nums[left_pointer]) < abs(nums[right_pointer]):
+                term = nums[right_pointer]
+                right_pointer -= 1
+            else:
+                term = nums[left_pointer]
+                left_pointer += 1
+            result[i] = term*term
+        return result
+        
+result - Runtime: 220 ms (87%),  Memory Usage: 16.3 MB (33%)
+
+# similarly, for good memory space usage, work with same array, don't define a new array
+class Solution:
+    def sortedSquares(self, nums: List[int]) -> List[int]:
+        for i in range(len(nums)):
+            nums[i]=nums[i]*nums[i]
+        return sorted(nums)
+
+result - accepted, Memory Usage: 15.6 MB (97.5%)

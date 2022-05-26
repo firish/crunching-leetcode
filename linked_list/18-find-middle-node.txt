@@ -1,0 +1,40 @@
+Given the head of a singly linked list, return the middle node of the linked list.
+
+If there are two middle nodes, return the second middle node.
+ 
+Example 1:
+Input: head = [1,2,3,4,5]
+Output: [3,4,5]
+Explanation: The middle node of the list is node 3.
+
+Example 2:
+Input: head = [1,2,3,4,5,6]
+Output: [4,5,6]
+Explanation: Since the list has two middle nodes with values 3 and 4, we return the second one. 
+
+Constraints:
+The number of nodes in the list is in the range [1, 100].
+1 <= Node.val <= 100
+
+
+// Doing this is two passes is very easy
+// Do it in a single pass
+// use hair-tortoise pointer
+
+// My solution
+class Solution:
+    def middleNode(self, head: Optional[ListNode]) -> Optional[ListNode]:
+        fast = slow = head
+        while fast:
+            fast = fast.next
+            if fast: 
+                fast = fast.next
+                slow = slow.next
+        return slow
+
+result ->
+Success
+Details 
+Runtime: 32 ms, faster than 87.05% of Python3 online submissions for Middle of the Linked List.
+Memory Usage: 13.8 MB, less than 95.84% of Python3 online submissions for Middle of the Linked List.
+

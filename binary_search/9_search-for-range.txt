@@ -1,0 +1,86 @@
+Given an array of integers nums sorted in non-decreasing order, 
+find the starting and ending position of a given target value.
+
+If target is not found in the array, return [-1, -1].
+You must write an algorithm with O(log n) runtime complexity.
+ 
+
+Example 1:
+Input: nums = [5,7,7,8,8,10], target = 8
+Output: [3,4]
+
+Example 2:
+Input: nums = [5,7,7,8,8,10], target = 6
+Output: [-1,-1]
+
+Example 3:
+Input: nums = [], target = 0
+Output: [-1,-1]
+ 
+Constraints:
+0 <= nums.length <= 105
+-109 <= nums[i] <= 109
+nums is a non-decreasing array.
+-109 <= target <= 109
+
+// My solution
+class Solution:
+    def searchRange(self, nums: List[int], target: int) -> List[int]:
+        # Pre Processing
+        # Handle corner case where len of nums < 2
+        if len(nums) == 0: return [-1,-1]
+        if len(nums) == 1:
+            if nums[0] == target:
+                return [0,0] 
+            else:
+                return [-1,-1]
+        
+        # Classic Binary Search
+        # We will have to check element to left and right of middle
+        left, right = 0, len(nums)-1
+        while left + 1 < right:
+            m = (left+right)//2
+            
+            # conditions to go left or right
+            if nums[m] > target:
+                right = m
+            elif nums[m] < target:
+                left = m
+
+result ->
+Submission Detail
+88 / 88 test cases passed.
+Status: Accepted
+Runtime: 84 ms (93%)
+Memory Usage: 15.5 MB (<10%)
+                
+            # additional calculation if target is found
+            elif nums[m] == target:
+                # to find range, declare two pointers, low and high 
+                # slide the two pointers to calculate range of target
+                low, high = m, m
+                # calculate lower bound of targets range
+                while low >= 0 and nums[low-1] == target:
+                    low -= 1
+                # if all elements before middle are equal to target, we need to correct low by +1
+                if low==-1:
+                    low+= 1
+                # calculate upper bound of targets range
+                while high <= len(nums)-2 and nums[high+1] == target:
+                    high += 1
+                # if all elements after middle are equal to target, we need to correct high by -1
+                if high == len(nums):
+                    high -= 1
+                return [low, high]
+        
+        # Post Processing
+        # if target is not found, the BS always ends with left = right-1
+        # so we need to check two indices, which have 4 cases 
+        if nums[left] == nums[right] == target:
+            return [left, right]
+        elif nums[left] == target:
+            return [left,left]
+        elif nums[right] == target:
+            return [right,right]
+        else:
+            return [-1,-1]

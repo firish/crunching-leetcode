@@ -1,0 +1,136 @@
+1249. Minimum Remove to Make Valid Parentheses
+Medium
+
+Given a string s of '(' , ')' and lowercase English characters.
+Your task is to remove the minimum number of parentheses ( '(' or ')', in any positions ),
+so that the resulting parentheses string is valid and return any valid string.
+
+Formally, a parentheses string is valid if and only if:
+It is the empty string, contains only lowercase characters, or
+It can be written as AB (A concatenated with B), where A and B are valid strings, or
+It can be written as (A), where A is a valid string.
+
+Example 1:
+Input: s = "lee(t(c)o)de)"
+Output: "lee(t(c)o)de"
+Explanation: "lee(t(co)de)" , "lee(t(c)ode)" would also be accepted.
+
+Example 2:
+Input: s = "a)b(c)d"
+Output: "ab(c)d"
+
+Example 3:
+Input: s = "))(("
+Output: ""
+Explanation: An empty string is also valid.
+ 
+Constraints:
+1 <= s.length <= 105
+s[i] is either'(' , ')', or lowercase English letter.
+
+// My solutions
+class Solution:
+    def minRemoveToMakeValid(self, s: str) -> str:
+        # Solution 1, clean two pass sol, ~1400 ms
+        # first pass,
+        # get value of opening and closing braces to delete
+        open_stack, close_stack = [], []
+        for i in range(len(s)):
+            if s[i] == '(': open_stack.append(i)
+            if s[i] == ")":
+                if len(open_stack) >= 1: open_stack.pop()
+                else: close_stack.append(i)
+        
+        # second pass, 
+        # ignore indices which are present in either stack
+        res = ""
+        for i in range(len(s)):
+            if i in open_stack or i in close_stack: continue
+            res += s[i]
+        return res
+                
+        
+        # Solution 2
+        # scrappier, but faster code, O(3N),  ~ 500 ms
+        # first part is same
+        o_stack, c_stack = [], []
+        for char in s:
+            if char == '(': o_stack.append('(')
+            if char == ")":
+                if len(o_stack) >= 1: o_stack.pop()
+                else: c_stack.append(')')
+        
+        # second part, remove any unbalanced closing braces 
+        res = ""
+        if len(c_stack) >= 1:
+            for i in range(len(s)):
+                if s[i] == ")":
+                    if len(c_stack) >= 1:
+                        c_stack.pop()
+                    else:
+                        res += s[i]
+                else:
+                    res += s[i]
+        else:
+            res = s
+        
+        # third part, remove any unbalanced opening braces
+        # for opening braces, remove them from right to left to keep result balanced
+        out = ""
+        if len(o_stack) >= 1:
+            for i in range(len(res)-1,-1,-1):
+                if res[i] == "(":
+                    if len(o_stack) >= 1:
+                        o_stack.pop()
+                    else:
+                        out = res[i] + out
+                else:
+                    out = res[i] + out
+            return out
+        else:
+            return res
+
+
+// very smart, inspired solution
+class Solution:
+    def minRemoveToMakeValid(self, s: str) -> str:
+        # Solution 3
+        # first pass,
+        # get value of opening brace to delete and remove unbalanced closing brace
+        def balance(s, os, cs):
+            res = ""
+            open_stack = []
+            for i in range(len(s)):
+                if s[i] == os: open_stack.append(i)
+                if s[i] == cs:
+                    if len(open_stack) >= 1: open_stack.pop()
+                    else: continue
+                res += s[i]
+            return res
+        
+        # second pass, 
+        # same, process, invert the value of braces and reverse the string
+        res = balance(s,'(',')')
+        s = balance(res[::-1],')','(')
+        return s[::-1]
+
+
+// also note,
+deletion and addition to string is slow, as new string is made every time
+// using an array takes extra space, but it is very quick
+class Solution:
+    def minRemoveToMakeValid(self, s: str) -> str:
+        s = list(s)
+        stack = []
+        for i, char in enumerate(s):
+            if char == '(':
+                stack.append(i)
+            elif char == ')':
+                if stack:
+                    stack.pop()
+                else:
+                    s[i] = ''
+        while stack:
+            s[stack.pop()] = ''
+        return ''.join(s)
+result -> ~ 60 ms, faster than 99.95%

@@ -1,0 +1,121 @@
+Given an array of positive integers nums and a positive integer target, 
+return the minimal length of a contiguous subarray [numsl, numsl+1, ..., numsr-1, numsr]
+ of which the sum is greater than or equal to target. 
+If there is no such subarray, return 0 instead.
+
+Example 1:
+
+Input: target = 7, nums = [2,3,1,2,4,3]
+Output: 2
+Explanation: The subarray [4,3] has the minimal length under the problem constraint.
+Example 2:
+
+Input: target = 4, nums = [1,4,4]
+Output: 1
+Example 3:
+
+Input: target = 11, nums = [1,1,1,1,1,1,1,1]
+Output: 0
+
+// More tricky than it looks
+// Initially, I tried sorting, but it changes order of elements, so it is wrong
+// My next approach was with respect to max element of the list
+// as minimal string will have max element, but this approach only passed 16/19 test cases
+
+// My third approach
+// is to use a sliding window
+// first for loops goes though elements of array
+// second for loop goes to len(sliding window)
+// so time complexity is O(N*K)
+// for many cases K is small, so it is way better than O(N2)
+// However, worst case, when sum of all elements is less than target, complexity is O(N2)
+
+class Solution:
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        sw = len(nums)
+        flag = 0
+        for i in range(len(nums)):
+            s = 0
+            s += nums[i]
+            c = 1
+            if s >= target:
+                return 1
+            for j in range(i+1,i+sw):
+                if j > len(nums)-1:
+                    break
+                s += nums[j]
+                c += 1
+                if s >= target:
+                    sw = c
+                    flag = 1
+                    break
+        if flag:
+            return sw
+        else:
+            return 0
+
+result ->Submission Detail
+18 / 19 test cases passed.
+Status: Time Limit Exceeded
+Submitted: 0 minutes ago
+
+
+// 4th approach
+// two pointer method (quick and slow pointer)
+class Solution:
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+
+        # handle corner cases 
+        # if sum of all elements less than target, return 0
+        if sum(nums) < target:
+            return 0
+        # if sum all elements equal to target, return len of array
+        elif sum(nums) == target:
+            return len(nums)
+        
+        # initialise sum, second pointer and var to store minimum value
+        s, j, mini = 0,0, len(nums)
+        
+        # travels all elements of array
+        for i in range(len(nums)):
+            s += nums[i]
+            
+            # handles exception
+            if s >= target:
+                mini = min(mini,i-j)
+                
+            # second loop
+            # runs conditionally, untill sum is greater than target
+            while s - nums[j] >= target:
+                s -= nums[j]
+                j += 1
+                mini = min(mini,i-j)
+        # mini has difference between two indices
+        # to consider both the end indices, add 1 
+        return mini + 1
+
+result->Submission Detail
+19 / 19 test cases passed.
+Status: Accepted
+Runtime: 80 ms (74%)
+Memory Usage: 16.8 MB (28%)
+
+
+// inspired, cleaner two point solution
+class Solution:
+    def minSubArrayLen(self, target: int, nums: List[int]) -> int:
+        j=0
+        total=0
+        result=999999999 # any num bigger than allowed constraint
+        for i in range(len(nums)):
+            total += nums[i]
+            while total >= target:
+                result = min(result, i-j+1) # 1 to consider both end indices
+                total -= nums[j]
+                j += 1
+        return 0 if result == 999999999 else result
+
+
+// Approach 5
+// Binary Search Algo
+

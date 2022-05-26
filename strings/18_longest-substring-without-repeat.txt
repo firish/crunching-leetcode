@@ -1,0 +1,80 @@
+3. Longest Substring Without Repeating Characters
+Medium
+
+Given a string s, find the length of the longest substring without repeating characters.
+
+Example 1:
+Input: s = "abcabcbb"
+Output: 3
+Explanation: The answer is "abc", with the length of 3.
+
+Example 2:
+Input: s = "bbbbb"
+Output: 1
+Explanation: The answer is "b", with the length of 1.
+
+Example 3:
+Input: s = "pwwkew"
+Output: 3
+Explanation: The answer is "wke", with the length of 3.
+Notice that the answer must be a substring, "pwke" is a subsequence and not a substring.
+ 
+Constraints:
+0 <= s.length <= 5 * 104
+s consists of English letters, digits, symbols and spaces.
+
+// My first solution
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s: return 0
+        hashmap = {}
+        i, longest, current = 0, 0, 0
+        s = list(s)  # convert string to list for faster operation
+        while i < len(s):
+            # if char is already present in hashmap
+            # discard every char upto (and including) the first occurance of that char
+            if s[i] in hashmap:
+                i = hashmap[s[i]] + 1
+                hashmap = {}
+                hashmap[s[i]] = i
+                current = 1
+            else:
+                # for new character, add it in hashmap and increase longest by 1
+                current += 1
+                hashmap[s[i]] = i
+            i += 1
+            longest = max(longest, current)
+        return longest
+
+result ->
+Runtime: 1029 ms, faster than 7.26% of Python3 online submissions for Longest Substring Without Repeating Characters.
+Memory Usage: 14.2 MB, less than 50.00% of Python3 online submissions for Longest Substring Without Repeating Characters.
+
+// second sol, inspired
+class Solution:
+    # @return an integer
+    def lengthOfLongestSubstring(self, s):
+        start = maxLength = 0
+        usedChar = {}
+        for i in range(len(s)):
+            if s[i] in usedChar and start <= usedChar[s[i]]:
+                start = usedChar[s[i]] + 1
+            else:
+                maxLength = max(maxLength, i - start + 1)
+            usedChar[s[i]] = i
+        return maxLength
+
+// Third solution, mine
+class Solution:
+    def lengthOfLongestSubstring(self, s: str) -> int:
+        if not s: return 0
+        start_point, max_len, hashmap = 0, 0, {}
+        for i in range(len(s)):
+            if s[i] in hashmap and hashmap[s[i]] >= start_point:
+                start_point = hashmap[s[i]] + 1
+            max_len = max(max_len, i-start_point+1)
+            hashmap[s[i]] = i
+        return max_len
+
+result ->
+86% and 91%

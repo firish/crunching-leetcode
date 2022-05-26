@@ -1,0 +1,88 @@
+You are given an array prices where prices[i] is the price of a given stock on the ith day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock.
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+
+Example 1:
+Input: prices = [7,1,5,3,6,4]
+Output: 5
+Explanation: Buy on day 2 (price = 1) and sell on day 5 (price = 6), profit = 6-1 = 5.
+Note that buying on day 2 and selling on day 1 is not allowed because you must buy before you sell.
+
+Example 2:
+Input: prices = [7,6,4,3,1]
+Output: 0
+Explanation: In this case, no transactions are done and the max profit = 0.
+
+Constraints:
+1 <= prices.length <= 105
+0 <= prices[i] <= 104
+
+// My first solution, O(n2), brute force
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        prof = 0
+        for i in range(len(prices)-1): prof = max(prof, max(prices[i+1:]) - prices[i])
+        return prof
+
+result -> TLE
+
+// My second solution
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        prof = 0
+        buy = []
+        for i in range(len(prices)):
+            for val in buy:
+                if val < prices[i]: prof = max(prof, prices[i] - val)
+            buy.append(prices[i])
+        return prof
+
+result -> TLE
+
+// My third solution, optimized brute force, still TLE
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        prof = 0
+        for i in range(len(prices)-1):
+            if prices[i] > prices[i + 1]: continue
+            else: prof = max(prof, max(prices[i+1:]) - prices[i])
+        return prof
+
+// Fourth solution, scrappy, but O(n) single pass
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        i, prof = 0, 0, 
+        # small and big keep track of current max and min price encountered
+        small, big = [0, float('inf')], [0, float('-inf')]
+        while i < len(prices):
+            if prices[i] < small[1]:
+                small[1] = prices[i]
+                small[0] = i
+                big[1] = prices[i]
+                big[0] = i
+                if big[0] >= small[0]:
+                    prof = max(prof, big[1] - small[1])
+            elif prices[i] > big[1]:
+                big[1] = prices[i]
+                big[0] = i
+                if big[0] > small[0]:
+                    prof = max(prof, big[1] - small[1])
+            i += 1
+        return prof
+
+// Fifth Solution, cleaner code, single pass
+// loosely related to kadanes algo, keep a curr element (buy) and update it based on condition
+class Solution:
+    def maxProfit(self, prices: List[int]) -> int:
+        prof = 0
+        buy = sell = prices[0]
+        for i in range(len(prices)):
+            if prices[i] < buy:
+                buy = prices[i]
+                sell = buy
+            elif prices[i] > buy:
+                sell = prices[i]
+            prof = max(prof, sell-buy)
+        return prof
+

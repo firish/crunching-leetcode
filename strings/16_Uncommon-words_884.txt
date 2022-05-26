@@ -1,0 +1,44 @@
+A sentence is a string of single-space separated words where each word consists only of lowercase letters.
+
+A word is uncommon if it appears exactly once in one of the sentences, 
+and does not appear in the other sentence.
+
+Given two sentences s1 and s2, 
+return a list of all the uncommon words. 
+You may return the answer in any order.
+
+Input: s1 = "this apple is sweet", s2 = "this apple is sour"
+Output: ["sweet","sour"]
+
+Input: s1 = "apple apple", s2 = "banana"
+Output: ["banana"]
+
+// My first solution
+class Solution:
+    def uncommonFromSentences(self, s1: str, s2: str) -> List[str]:
+        s = s1 + " " + s2
+        s = s.split()
+        ans = []
+        for word in s:
+            if s.count(word) == 1:
+                ans.append(word)
+        return ans
+        
+
+// Inspired, without count or counter method
+from collections import defaultdict
+class Solution:
+    def uncommonFromSentences(self, s1: str, s2: str) -> List[str]:
+
+        freq1 = defaultdict(int)
+        for w in s1.split():
+            freq1[w] += 1
+        
+        freq2 = defaultdict(int)
+        for w in s2.split():
+            freq2[w] += 1
+        
+        unique1 = [w for w in s1.split() if freq1[w] == 1 and freq2[w] == 0]
+        unique2 = [w for w in s2.split() if freq2[w] == 1 and freq1[w] == 0]
+
+        return unique1 + unique2

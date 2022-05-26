@@ -1,0 +1,27 @@
+Longest Common Substring in an Array of Strings
+Difficulty Level : Easy
+Last Updated : 21 Oct, 2020
+Geeks for geeks
+
+Input : grace graceful disgraceful gracefully
+Output : grace
+
+Input : sadness sad sadly
+Output : sad
+
+// My solution
+        strs = sorted(strs, key = lambda k:len(k))
+        n = len(strs)
+        sw = len(strs[0])
+        max_str = ""
+        while sw > 0:
+            flag = True
+            key = strs[0][:sw]
+            for i in range(1,n):
+                if key not in strs[i]:
+                    flag = False
+            if flag:
+                if len(key)>len(max_str):
+                    max_str = key
+            sw -= 1
+        return max_str

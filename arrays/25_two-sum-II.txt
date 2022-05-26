@@ -1,0 +1,90 @@
+Given a 1-indexed array of integers numbers that is already sorted in non-decreasing order, 
+find two numbers such that they add up to a specific target number. 
+Let these two numbers be numbers[index1] and numbers[index2] where 1 <= index1 < index2 <= numbers.length.
+
+Return the indices of the two numbers, index1 and index2, added by one as an integer array [index1, index2] of length 2.
+
+The tests are generated such that there is exactly one solution. You may not use the same element twice.
+Your solution must use only constant extra space.
+
+Example 1:
+Input: numbers = [2,7,11,15], target = 9
+Output: [1,2]
+Explanation: The sum of 2 and 7 is 9. Therefore, index1 = 1, index2 = 2. We return [1, 2].
+
+Example 2:
+Input: numbers = [2,3,4], target = 6
+Output: [1,3]
+Explanation: The sum of 2 and 4 is 6. Therefore index1 = 1, index2 = 3. We return [1, 3].
+
+Example 3:
+Input: numbers = [-1,0], target = -1
+Output: [1,2]
+Explanation: The sum of -1 and 0 is -1. Therefore index1 = 1, index2 = 2. We return [1, 2].
+
+// My first solution
+
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        
+        for i in range(len(numbers)):
+            j = i+1
+            while j < len(numbers):
+                if numbers[i] + numbers[j] == target:
+                    return [i+1,j+1]
+                else:
+                    j += 1
+result ->
+Submission Detail
+18 / 21 test cases passed.
+Status: Time Limit Exceeded
+// Try to finish in less than O(n2)
+
+
+// My second solution
+// since I need to avoid a double loop,
+// I will use a hashmap
+// follow hashmap[value] = index convention
+
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        hashmap = {}
+        for i,val in enumerate(numbers):
+            hashmap[val] = i
+        for i in range(len(numbers)):
+            complement = target - numbers[i]
+            if complement in hashmap.keys():
+                return [i+1,hashmap[complement]+1] # +1 as it is demanded by problem statement
+
+result ->
+Submission Detail
+21 / 21 test cases passed.
+Status: Accepted
+Runtime: 137 ms (31%)
+Memory Usage: 14.9 MB (10%)
+
+// My solution three
+// humble attemp at trying it in a single pass
+class Solution:
+    def twoSum(self, numbers: List[int], target: int) -> List[int]:
+        hashmap = {}
+        for i,val in enumerate(numbers):
+            c = target - numbers[i]
+            if c in hashmap.keys():
+                return [hashmap[c]+1,i+1] # had to switch this position, to send correct answer
+            hashmap[val] = i
+
+// inspired solution
+// uses the fact that the array is sorted
+// plus no auxilary data struc, so space complexity is also great
+        left, right = 0, len(numbers) - 1
+        while left < right:
+            s = numbers[left] + numbers[right]
+            if s == target:
+                return [left + 1, right + 1]
+            
+            if s > target:
+                right -= 1
+            else:
+                left += 1
+

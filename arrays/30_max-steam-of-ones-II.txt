@@ -1,0 +1,52 @@
+Given a binary array nums, return the maximum number of consecutive 1's in the array if you can flip at most one 0.
+
+Example 1:
+Input: nums = [1,0,1,1,0]
+Output: 4
+Explanation: Flip the first zero will get the maximum number of consecutive 1s. 
+After flipping, the maximum number of consecutive 1s is 4.
+
+Example 2:
+Input: nums = [1,0,1,1,0,1]
+Output: 4
+ 
+Constraints:
+1 <= nums.length <= 105
+nums[i] is either 0 or 1.
+
+Follow up: What if the input numbers come in one by one as an infinite stream? 
+In other words, you can't store all numbers coming from the stream as it's too large to hold in memory. 
+Could you solve it efficiently?
+
+
+// My solution
+class Solution:
+    def findMaxConsecutiveOnes(self, nums: List[int]) -> int:
+        maxi = float('-inf')
+        n = len(nums)
+        if n == 0:  return 0
+        
+        # keep track of current run of 1's and previous run of 1's
+        # adding previous and current run gives total ones with at most one flip
+        # this method is not using any aux data structure and can work with continous data stream
+        i = count = prev = total = z = 0
+        while i < n:
+            if nums[i] == 1:
+                count += 1
+            else:
+                z = 1
+                prev = count
+                count = 0
+            i += 1
+            # var z adds 1 for the zero we are flipping
+            # +1 is not hardcoded as it will give a wrong answer if array contains no zeros
+            total = prev + count + z
+            if total > maxi: maxi = total
+        return maxi
+
+result ->
+Submission Detail
+43 / 43 test cases passed.
+Status: Accepted
+Runtime: 380 ms (95%)
+Memory Usage: 14.3 MB (86%)

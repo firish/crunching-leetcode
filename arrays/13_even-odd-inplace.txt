@@ -1,0 +1,39 @@
+Given an integer array nums, move all the even integers at the beginning of the array followed by all the odd integers.
+
+Return any array that satisfies this condition.
+
+ 
+
+Example 1:
+
+Input: nums = [3,1,2,4]
+Output: [2,4,3,1]
+Explanation: The outputs [4,2,3,1], [2,4,1,3], and [4,2,1,3] would also be accepted.
+Example 2:
+
+Input: nums = [0]
+Output: [0]
+
+// My first solution
+class Solution:
+    def sortArrayByParity(self, nums: List[int]) -> List[int]:
+        odd_pointer = 0 # point to first odd number in array
+        for i in range(len(nums)):
+            if nums[i]%2 == 0: # if number is odd, skip
+                shift = nums[odd_pointer] # if even, switch it with first odd number of array
+                nums[odd_pointer] = nums[i]
+                nums[i] = shift
+                odd_pointer += 1
+            i += 1
+        return nums
+              
+result - Submission Detail
+285 / 285 test cases passed.
+Status: Accepted
+Runtime: 115 ms (40%)
+Memory Usage: 14.6 MB (97%)
+
+// Inspired by internet, 1 line solution with 100 percentile space complexity
+class Solution:
+    def sortArrayByParity(self, nums: List[int]) -> List[int]:
+        return nums.sort(key = lambda x: x%2)

@@ -1,0 +1,97 @@
+Given a non-negative integer x, compute and return the square root of x.
+
+Since the return type is an integer, the decimal digits are truncated, 
+and only the integer part of the result is returned.
+
+Note: You are not allowed to use any built-in exponent function or operator, such as pow(x, 0.5) or x ** 0.5.
+
+ 
+Example 1:
+Input: x = 4
+Output: 2
+
+Example 2:
+Input: x = 8
+Output: 2
+Explanation: The square root of 8 is 2.82842..., and since the decimal part is truncated, 2 is returned.
+
+// My first solution
+// couldn't figure out how to apply binary search to this problem
+// However solved it using simulation
+// simple and clean solution
+
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        n = 1
+        while 1:
+            if n*n == x:
+                return n
+            elif n*n > x:
+                return n-1
+            else:
+                n += 1
+
+result ->Submission Detail
+1017 / 1017 test cases passed.
+Status: Accepted
+Runtime: 2704 ms (13%)
+Memory Usage: 13.9 MB (83%)
+
+// My second code
+// uses binary search to reduce the number of visited numbers
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # handle corner cases
+        if x == 0:
+            return 0
+        elif x <= 3:
+            return 1
+
+	# make a base array of integer to itirate
+        arr = list(range(1,(x+1)//2))
+        left = 0
+        right = len(arr) - 1
+	
+	# keep track of minimum element whose square is greater than target
+	# answer will be mini - 1 
+        mini = right + 1
+
+        while left <= right:
+            middle = (left + right) // 2
+            key = arr[middle]*arr[middle]
+            if key == x:
+                return arr[middle]
+            elif key > x:
+                right = middle - 1
+                mini = min(mini,arr[middle]) # compute minimum
+            else:
+                left = middle + 1
+        return mini - 1
+
+result -> works,
+however for very big inputs, it gives Memory Limit Exceeded (MLE)
+
+
+// My third solution,
+// try to find a solution in which len of array is less
+class Solution:
+    def mySqrt(self, x: int) -> int:
+        # handle corner case
+        if x == 0:
+            return 0
+        
+        # mini var is used to keep track of minimum variable with square greater than target
+        # since we don't require a decimal answer, the return value will be simply mini-1
+        left, right, mini = 0, x, x+1
+        
+        while left <= right:
+            middle = (left + right)//2  # integer part
+            if middle*middle == x:
+                return middle
+            elif middle*middle < x:
+                left = middle + 1
+            elif middle * middle > x:
+                mini = min(mini,middle) 
+                right = middle - 1
+                
+        return mini - 1

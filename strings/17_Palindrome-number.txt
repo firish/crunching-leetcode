@@ -1,0 +1,76 @@
+Given an integer x, return true if x is palindrome integer.
+
+An integer is a palindrome when it reads the same backward as forward.
+
+For example, 121 is a palindrome while 123 is not.
+ 
+
+Example 1:
+
+Input: x = 121
+Output: true
+Explanation: 121 reads as 121 from left to right and from right to left.
+Example 2:
+
+Input: x = -121
+Output: false
+Explanation: From left to right, it reads -121. From right to left, it becomes 121-. Therefore it is not a palindrome.
+Example 3:
+
+Input: x = 10
+Output: false
+Explanation: Reads 01 from right to left. Therefore it is not a palindrome.
+ 
+
+Constraints:
+
+-231 <= x <= 231 - 1
+
+Follow up: Could you solve it without converting the integer to a string?
+
+
+// My first solution
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        
+        x = str(x)
+        p = ""
+        for i in range(len(x)-1,-1,-1):
+            p += x[i]
+        return True if p == x else False
+
+result ->
+Success
+Details 
+Runtime: 103 ms, faster than 36.57% of Python3 online submissions for Palindrome Number.
+Memory Usage: 13.9 MB, less than 76.09% of Python3 online submissions for Palindrome Number.
+
+
+// My second solution
+// without converting to string
+class Solution:
+    def isPalindrome(self, x: int) -> bool:
+        # take care of negatives
+        if x < 0:
+            return False
+        
+        # get digits of number x
+        digits = []
+        while x != 0:
+            digits.append(x % 10)
+            x = x // 10
+            print(x)
+        i, j = 0, len(digits)-1
+        
+        # check for palindrome
+        while i < j:
+            if digits[i] != digits[j]:
+                return False
+            else:
+                i += 1
+                j -= 1
+        return True
+            
+
+// single line, using str
+return False if x < 0 else x == int(str(x)[::-1])

@@ -1,0 +1,87 @@
+You are a product manager and currently leading a team to develop a new product. 
+Unfortunately, the latest version of your product fails the quality check. 
+Since each version is developed based on the previous version, 
+all the versions after a bad version are also bad.
+
+Suppose you have n versions [1, 2, ..., n] and you want to find out the first bad one, 
+which causes all the following ones to be bad.
+
+You are given an API bool isBadVersion(version) which returns whether version is bad. 
+Implement a function to find the first bad version. 
+You should minimize the number of calls to the API.
+
+Example 1:
+Input: n = 5, bad = 4
+Output: 4
+Explanation:
+call isBadVersion(3) -> false
+call isBadVersion(5) -> true
+call isBadVersion(4) -> true
+Then 4 is the first bad version.
+
+Example 2:
+Input: n = 1, bad = 1
+Output: 1
+
+Constraints:
+1 <= bad <= n <= 231 - 1
+
+// My first solution,
+// Unclean if-else ladder at the end
+# The isBadVersion API is already defined for you.
+# def isBadVersion(version: int) -> bool:
+
+class Solution:
+    def firstBadVersion(self, n: int) -> int:
+        left, right = 0, n
+        while left < right:
+            m = (left + right)//2
+            if isBadVersion(m):
+                right = m - 1
+            else:
+                left = m + 1 
+        if left > m and isBadVersion(left):
+            return left
+        elif left > m and not isBadVersion(left):
+            return left + 1
+        elif left == m:
+            return m
+        elif m > left and not isBadVersion(left):
+            return m
+        else:
+            return m - 1
+
+result ->
+Submission Detail
+22 / 22 test cases passed.
+Status: Accepted
+Runtime: 32 ms (83%)
+Memory Usage: 13.8 MB (83%)
+
+
+// TIP
+Here is a helpful tip to quickly prove the correctness of your binary search algorithm during an interview. 
+We just need to test an input of size 2. 
+Check if it reduces the search space to a single element (which must be the answer) for both of the scenarios above. 
+If not, your algorithm will never terminate.
+
+// cleaner algorithm, inspired
+// always make changes to your BS template to make working with the problem easier
+# The isBadVersion API is already defined for you.
+# def isBadVersion(version: int) -> bool:
+
+class Solution:
+    def firstBadVersion(self, n: int) -> int:
+        # change template acc to question
+        # since there is no array, start with left = 1
+        left, right = 1, n
+        while left < right:
+            m = (left + right)//2
+            if isBadVersion(m):
+                # dont set m-1
+                # as m can be the first bad version, so dont discard it
+                right = m
+            else:
+                left = m + 1 
+        return left
+                

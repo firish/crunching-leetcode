@@ -1,0 +1,185 @@
+Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
+
+Note that you must do this in-place without making a copy of the array.
+ 
+
+Example 1:
+
+Input: nums = [0,1,0,3,12]
+Output: [1,3,12,0,0]
+Example 2:
+
+Input: nums = [0]
+Output: [0]
+
+// Hint -> A two-pointer approach could be helpful here. 
+// The idea would be to have one pointer for iterating the array and another pointer that just works on the non-zero elements of the array.
+
+My first solution 
+// In place Space = O(n)
+// Time = between O(n) and O(n2) // second loop executes for less iterations.
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        if len(nums) == 2:
+            if nums[0] == 0:
+                nums[0] = nums[1]
+                nums[1] = 0
+            return 
+        i = 0
+        while i < len(nums)-1:
+            j = i + 1
+            if nums[i] == 0 and nums[j] != 0:
+                shift = nums[i]
+                nums[i] = nums[j]
+                nums[j] = shift
+                i += 1
+                continue
+            elif nums[i] == 0 and nums [j] == 0:
+                while nums[i] == 0 and nums [j] == 0:
+                    if j == len(nums)-1:
+                        break
+                    j += 1
+                nums[i] = nums[j]
+                nums[j] = 0
+            i += 1
+
+result - Submission Detail
+72 / 74 test cases passed.
+Status: Time Limit Exceeded
+
+// My second solution
+// relatively simple
+
+class Solution:
+    def moveZeroes(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        z = 0
+        i = 0
+        while True:
+            if i > len(nums)-1:
+                break
+            if nums[i] == 0:
+                z += 1
+                nums.pop(i)
+                continue
+            i += 1
+        for i in range(z):
+            nums.append(0)
+                
+Submission Detail
+74 / 74 test cases passed.
+Status: Accepted
+Runtime: 325 ms (40%)
+Memory Usage: 15.6 MB (20%)
+
+
+// IMPORTANT 
+// Very dignified solution from the internet
+// using two pointer method 
+// we need a second pointer to keep track of zeroes we are shifting
+// the fault with my method was that I was moving the second pointer (j) ahead of primary pointer (i)
+// So I needed the second while loop
+// In this solution, second pointer (c) moves behind primary pointer (i) and points to first zero of the group of zeros
+
+// SOlution
+        c = 0
+        for i in range(len(nums)):
+            if nums[i]:
+                nums[c], nums[i] = nums[i], nums[c] 
+                c += 1
+        return nums
+
+result - runs in 168 ms, half of my solution
+
+// detailed executition of the above code
+num = nums = [0,0,1,2,3,4,0,0,0,0,0,5,6]
+
+############### FOR LOOP ITER STARTS #########################
+I ::: 0
+C ::: 0
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 1
+C ::: 0
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 2
+C ::: 0
+nums[i] ::: 1
+Inside IF
+Array before exchange ::: [0, 0, 1, 2, 3, 4, 0, 0, 0, 0, 0, 5, 6]
+Array after exchange ::: [1, 0, 0, 2, 3, 4, 0, 0, 0, 0, 0, 5, 6]
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 3
+C ::: 1
+nums[i] ::: 2
+Inside IF
+Array before exchange ::: [1, 0, 0, 2, 3, 4, 0, 0, 0, 0, 0, 5, 6]
+Array after exchange ::: [1, 2, 0, 0, 3, 4, 0, 0, 0, 0, 0, 5, 6]
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 4
+C ::: 2
+nums[i] ::: 3
+Inside IF
+Array before exchange ::: [1, 2, 0, 0, 3, 4, 0, 0, 0, 0, 0, 5, 6]
+Array after exchange ::: [1, 2, 3, 0, 0, 4, 0, 0, 0, 0, 0, 5, 6]
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 5
+C ::: 3
+nums[i] ::: 4
+Inside IF
+Array before exchange ::: [1, 2, 3, 0, 0, 4, 0, 0, 0, 0, 0, 5, 6]
+Array after exchange ::: [1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 5, 6]
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 6
+C ::: 4
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 7
+C ::: 4
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 8
+C ::: 4
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 9
+C ::: 4
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 10
+C ::: 4
+nums[i] ::: 0
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 11
+C ::: 4
+nums[i] ::: 5
+Inside IF
+Array before exchange ::: [1, 2, 3, 4, 0, 0, 0, 0, 0, 0, 0, 5, 6]
+Array after exchange ::: [1, 2, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 6]
+############### FOR LOOP ITER ENDS #########################
+############### FOR LOOP ITER STARTS #########################
+I ::: 12
+C ::: 5
+nums[i] ::: 6
+Inside IF
+Array before exchange ::: [1, 2, 3, 4, 5, 0, 0, 0, 0, 0, 0, 0, 6]
+Array after exchange ::: [1, 2, 3, 4, 5, 6, 0, 0, 0, 0, 0, 0, 0]
+############### FOR LOOP ITER ENDS #########################
+  

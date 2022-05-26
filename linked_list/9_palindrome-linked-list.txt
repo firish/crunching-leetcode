@@ -1,0 +1,34 @@
+Given the head of a singly linked list, return true if it is a palindrome.
+
+
+Example 1:
+Input: head = [1,2,2,1]
+Output: true
+
+Example 2:
+Input: head = [1,2]
+Output: false 
+
+Constraints:
+The number of nodes in the list is in the range [1, 105].
+0 <= Node.val <= 9
+ 
+Follow up: Could you do it in O(n) time and O(1) space?
+
+// My first solution
+// use a str
+class Solution:
+    def isPalindrome(self, head: Optional[ListNode]) -> bool:
+        p = head
+        s = ""
+        while p:
+            s += str(p.val)
+            p = p.next
+        return s == s[::-1]
+
+result -> 
+Submission Detail
+86 / 86 test cases passed.
+Status: Accepted
+Runtime: 1114 ms (44%)
+Memory Usage: 46.7 MB (40%)

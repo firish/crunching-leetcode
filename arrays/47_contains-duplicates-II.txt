@@ -1,0 +1,60 @@
+219. Contains Duplicate II
+
+Given an integer array nums and an integer k, return true if there are two distinct indices i and j in the array such that nums[i] == nums[j] and abs(i - j) <= k.
+
+Input: nums = [1,2,3,1], k = 3
+Output: true
+
+Input: nums = [1,2,3,1,2,3], k = 2
+Output: false
+
+First code
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        hashmap = {}
+        for i in range(len(nums)):
+            hashmap[i]=nums[i]
+        values = hashmap.values() # contains numbers 
+        keys = hashmap.keys() # contains index values
+        for i in range(len(nums)):
+            j = [e for e in keys if hashmap[e] == nums[i] and e != i]
+            for val in j:
+                if abs(i-val)<=k:
+                    return True
+        return False
+
+result - TLE
+
+second code
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        hashmap = {}
+        for i in range(len(nums)):
+            hashmap[i]=nums[i]
+        #values = hashmap.values() # contains numbers 
+        #keys = hashmap.keys() # contains index values
+        for i in range(len(nums)):
+            if nums[i] in hashmap.values():
+                j = [e for e in hashmap.keys() if hashmap[e] == nums[i] and e!=i and abs(i-e)<=k]
+                if len(j)>0:
+                    return True
+        return False
+
+result - TLE
+
+third code
+# remember - when using hashmap, try to do it in one pass.
+# first do the operation, then do the addition into hashmap
+# add in this format hashmap[value]=index
+
+class Solution:
+    def containsNearbyDuplicate(self, nums: List[int], k: int) -> bool:
+        hashmap = {}
+        for i, n in enumerate(nums):
+            if n in hashmap.keys() and abs(i - hashmap[n]) <= k:
+                return True
+            else:
+                hashmap[n] = i 
+        return False   
+
+result - accepted, 980ms, 27.2mb.

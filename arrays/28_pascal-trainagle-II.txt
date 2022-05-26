@@ -1,0 +1,81 @@
+Given an integer rowIndex, return the rowIndexth (0-indexed) row of the Pascal's triangle.
+
+In Pascal's triangle, each number is the sum of the two numbers directly above it as shown:
+
+
+Example 1:
+
+Input: rowIndex = 3
+Output: [1,3,3,1]
+Example 2:
+
+Input: rowIndex = 0
+Output: [1]
+Example 3:
+
+Input: rowIndex = 1
+Output: [1,1]
+ 
+
+Constraints:
+0 <= rowIndex <= 33
+
+Follow up: Could you optimize your algorithm to use only O(rowIndex) extra space?
+
+// My first solution
+// It uses only O(rowIndex) auxillary space
+// However, due to this, time complexity is not great
+// But space complexity is great
+
+class Solution:
+    def getRow(self, rowIndex: int) -> List[int]:
+
+        if rowIndex == 0:
+            return [1]
+        elif rowIndex == 1:
+            return [1,1]
+        
+        row = [1,1]
+        rowIndex -= 1
+        
+        while rowIndex != 0:
+            for i in range(1,len(row)):
+                j = i - 1
+                row[j] = row[j] + row[i]
+            row.insert(0,1) # this destroys my time complexity percentage
+            rowIndex -= 1
+        
+        return row
+
+result ->Submission Detail
+34 / 34 test cases passed.
+Status: Accepted
+Runtime: 56 ms (19%)
+Memory Usage: 13.7 MB (99%)
+
+// My second solution
+// to avoid inserting at the begining, try to think of something in which you can insert at end (cheap operation)
+// go from right to left
+
+class Solution:
+    def getRow(self, rowIndex: int) -> List[int]:
+    
+        # handle corner cases of rowIndex == 0 or 1
+        if rowIndex == 0:
+            return [1]
+        
+        # if row >= 1
+        row = [1]
+        while rowIndex > 0:
+            row.append(0)
+            for i in range(len(row)-1, 0, -1):
+                row[i] += row[i-1]
+            rowIndex -= 1
+        return row
+
+result -> Submission Detail
+34 / 34 test cases passed.
+Status: Accepted
+Runtime: 41 ms (55%)
+Memory Usage: 13.7 MB (99%)
+

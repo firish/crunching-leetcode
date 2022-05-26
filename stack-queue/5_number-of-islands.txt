@@ -1,0 +1,74 @@
+Given an m x n 2D binary grid grid which represents a map of '1's (land) and '0's (water), 
+return the number of islands.
+
+An island is surrounded by water and is formed by connecting adjacent lands horizontally or vertically. 
+You may assume all four edges of the grid are all surrounded by water.
+
+Example 1:
+
+Input: grid = [
+  ["1","1","1","1","0"],
+  ["1","1","0","1","0"],
+  ["1","1","0","0","0"],
+  ["0","0","0","0","0"]
+]
+Output: 1
+
+Example 2:
+Input: grid = [
+  ["1","1","0","0","0"],
+  ["1","1","0","0","0"],
+  ["0","0","1","0","0"],
+  ["0","0","0","1","1"]
+]
+Output: 3
+ 
+Constraints:
+m == grid.length
+n == grid[i].length
+1 <= m, n <= 300
+grid[i][j] is '0' or '1'.
+
+
+// My solution
+// Use BFS for Matrix
+// Maintain a common visited cell for all points in the grid
+class Solution:
+    def to_visit(self, visited, row, col, M, N):
+        if row < 0 or col < 0 or row >=M or col >= N: return False
+        elif visited[row][col] == 1: return False
+        else: return True
+        
+    def numIslands(self, grid: List[List[str]]) -> int:
+        from collections import deque as queue
+        M, N = len(grid), len(grid[0])
+        visited = [[0 for i in range(N)] for j in range(M)]
+        dir_r = [-1, 0, 1, 0]
+        dir_c = [0, 1, 0, -1]
+        islands = 0
+        for row in range(M):
+            for col in range(N):
+                if grid[row][col] == "1" and self.to_visit(visited, row, col, M, N):
+                    # print("here")
+                    visited[row][col] = 1
+                    one_queue = queue()
+                    one_queue.append([row, col])
+                    while len(one_queue) > 0:
+                        point = one_queue.popleft()
+                        r, c = point[0], point[1]
+                        for i in range(4):
+                            x, y = r + dir_r[i], c + dir_c[i]
+                            if self.to_visit(visited, x, y, M, N):
+                                visited[x][y] = 1
+                                if grid[x][y] == "1": one_queue.append([x, y])
+                    islands += 1
+        return islands
+
+result ->
+Submission Detail
+49 / 49 test cases passed.
+Status: Accepted
+Runtime: 338 ms (79%)
+Memory Usage: 16.1 MB (98%)
+
+// come back, code a recursive DFS

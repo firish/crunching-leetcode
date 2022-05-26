@@ -1,0 +1,72 @@
+Given a string s, return true if the s can be palindrome after deleting at most one character from it.
+
+Example 1:
+Input: s = "aba"
+Output: true
+
+Example 2:
+Input: s = "abca"
+Output: true
+Explanation: You could delete the character 'c'.
+
+Example 3:
+Input: s = "abc"
+Output: false
+ 
+Constraints:
+1 <= s.length <= 105
+s consists of lowercase English letters.
+
+
+// Difficulty -> you have to decide, if you delete the char in left or right side
+// My first solution, inefficient in terms of space
+class Solution:
+    def check(self, s,i,j):
+        while i<j:
+            if s[i] != s[j]: break
+            else:
+                i += 1
+                j -= 1
+        return [i,j]
+    
+    def validPalindrome(self, s: str) -> bool:
+        i, j = 0, len(s)-1
+        indices = self.check(s,i,j)
+        i,j = indices[0], indices[1]
+        if i>=j: return True
+        else:
+            s1 = s[:i] + s[i+1:]
+            s2 = s[:j] + s[j+1:]
+            indices1 = self.check(s1,0,len(s1)-1)
+            indices2 = self.check(s2,0,len(s2)-1)
+            if indices1[0]>=indices1[1] or indices2[0]>=indices2[1]: return True
+        return False
+
+result ->
+
+Runtime: 228 ms, faster than 34.64% of Python3 online submissions for Valid Palindrome II.
+Memory Usage: 14.6 MB, less than 52.23% of Python3 online submissions for Valid Palindrome II.
+
+
+// optimized
+class Solution:
+    def validPalindrome(self, s: str) -> bool:
+        def check_palindrome(s, i, j):
+            while i < j:
+                if s[i] != s[j]:
+                    return False
+                i += 1
+                j -= 1
+            
+            return True
+
+        i = 0
+        j = len(s) - 1
+        while i < j:
+            # Found a mismatched pair - try both deletions
+            if s[i] != s[j]:
+                return check_palindrome(s, i, j - 1) or check_palindrome(s, i + 1, j)
+            i += 1
+            j -= 1
+        
+        return True

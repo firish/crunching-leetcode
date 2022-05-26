@@ -1,0 +1,85 @@
+Given the head of a linked list, remove the nth node from the end of the list and return its head.
+
+ 
+Example 1:
+Input: head = [1,2,3,4,5], n = 2
+Output: [1,2,3,5]
+
+Example 2:
+Input: head = [1], n = 1
+Output: []
+
+Example 3:
+Input: head = [1,2], n = 1
+Output: [1]
+ 
+Constraints:
+The number of nodes in the list is sz.
+1 <= sz <= 30
+0 <= Node.val <= 100
+1 <= n <= sz
+ 
+Follow up: Could you do this in one pass?
+
+solution
+// First one, requiring two passes
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        if head == None: return head
+	# find size of list
+        p = head
+        count = 0
+        while p:
+            p = p.next
+            count += 1
+        index = count - n
+	# handle list where first element or only element is being removed from list
+        if count == 1: return None
+        if index == 0: 
+            head = head.next
+            return head
+	# second pass, traverse to node behind the node to be removed
+        i = 0
+        p = head
+        while i != index-1:
+            p = p.next
+            i += 1
+	# remove node, take care if node to remove is the last node
+        p.next = None if p.next.next == None else p.next.next
+        return head
+
+result -> Submission Detail
+208 / 208 test cases passed.
+Status: Accepted
+Runtime: 44 ms (60%)
+Memory Usage: 13.8 MB (80%)
+
+// My second solution
+// single pass
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        if head == None: return head
+        # if there is only 1 node in list, remove it
+        if head.next == None: return None
+        p = head
+        while p: 
+            temp = p
+            N = n
+            while N:
+                temp = temp.next
+                N -= 1
+            # if we have to remove first node of list
+            if temp == None:
+                head = head.next
+                break
+            elif temp.next == None:
+                p.next = p.next.next
+                break
+            else:
+                p = p.next
+        return head
+Submission Detail
+208 / 208 test cases passed.
+Status: Accepted
+Runtime: 32 ms (94%)
+Memory Usage: 14 MB (42%)

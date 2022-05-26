@@ -1,0 +1,83 @@
+20. Valid Parentheses
+Easy
+
+Given a string s containing just the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+An input string is valid if:
+Open brackets must be closed by the same type of brackets.
+Open brackets must be closed in the correct order.
+
+Example 1:
+Input: s = "()"
+Output: true
+
+Example 2:
+Input: s = "()[]{}"
+Output: true
+
+Example 3:
+Input: s = "(]"
+Output: false
+
+
+// My solution
+class Solution:
+    def isValid(self, s: str) -> bool:
+        stack = []
+        # ASCII values of chars: (=40, )=41, [=91, ]=93, {=123, }=125
+        # Note that difference in ASCII values of valid parenthesis is only 1 or 2
+        # for any other value, simply return false
+        for char in s:
+            if char == '(' or char == "[" or char == "{": stack.append(ord(char))
+            else:
+                if not stack: return False
+                else:
+                    val = ord(char) - stack.pop()
+                    if val != 1 and val != 2: return False
+        return False if stack else True
+
+result ->
+Submission Detail
+91 / 91 test cases passed.
+Status: Accepted
+Runtime: 26 ms (96%)
+Memory Usage: 13.9 MB (74%)
+
+
+// Inspired
+// using hashmap
+class Solution(object):
+    def isValid(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+
+        # The stack to keep track of opening brackets.
+        stack = []
+
+        # Hash map for keeping track of mappings. This keeps the code very clean.
+        # Also makes adding more types of parenthesis easier
+        mapping = {")": "(", "}": "{", "]": "["}
+
+        # For every bracket in the expression.
+        for char in s:
+
+            # If the character is an closing bracket
+            if char in mapping:
+
+                # Pop the topmost element from the stack, if it is non empty
+                # Otherwise assign a dummy value of '#' to the top_element variable
+                top_element = stack.pop() if stack else '#'
+
+                # The mapping for the opening bracket in our hash and the top
+                # element of the stack don't match, return False
+                if mapping[char] != top_element:
+                    return False
+            else:
+                # We have an opening bracket, simply push it onto the stack.
+                stack.append(char)
+
+        # In the end, if the stack is empty, then we have a valid expression.
+        # The stack won't be empty for cases like ((()
+        return not stack

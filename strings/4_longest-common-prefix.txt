@@ -1,0 +1,143 @@
+Write a function to find the longest common prefix string amongst an array of strings.
+
+If there is no common prefix, return an empty string "".
+
+Example 1:
+
+Input: strs = ["flower","flow","flight"]
+Output: "fl"
+Example 2:
+
+Input: strs = ["dog","racecar","car"]
+Output: ""
+Explanation: There is no common prefix among the input strings.
+
+
+// My first code
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        
+        # sort the array, such that string with shortest len is first
+        # avoids array index out of range complication
+        strs = sorted(strs, key = lambda k:len(k))
+        
+        # get number of strings in array
+        n = len(strs)
+        
+        # initialize sliding window with length equal to length of smallest string
+        # as common substring can not be bigger than smallest string
+        sw = len(strs[0])
+        
+        # initialize answer
+        max_str = ""
+        
+        flag = True
+        for i in range(sw):
+            for j in range(1,n):
+                if strs[0][i] != strs[j][i]:
+                    flag = False
+                    break
+            if not flag:
+                break
+            max_str += strs[0][i]
+                    
+        return max_str
+
+result -> 
+Submission Detail
+123 / 123 test cases passed.
+Status: Accepted
+Runtime: 32 ms (91%)
+Memory Usage: 13.9 MB (86%)
+Submitted: 0 minutes ago
+
+
+// My second submission
+// do not sort the list with respect of length of strings
+// tim sort takes nlogn time,
+// with no sorting, worst case is O(N-1*M), where M is chars in shortest string.
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        
+        # get number of strings in array
+        n = len(strs)
+        
+        # initialize sliding window with length equal to length of smallest string
+        # as common substring can not be bigger than smallest string
+        # get length of minimum value in strs
+        m = len(min(strs))
+        
+        # initialize answer
+        max_str = ""
+        
+        flag = True
+        for i in range(m):
+            for j in range(n):
+                if strs[0][i] != strs[j][i]:
+                    flag = False
+                    break
+            if not flag:
+                break
+            max_str += strs[0][i]
+                    
+        return max_str
+
+
+// Given solutions by Leet code
+// 1 Horizontal scanning 
+// in horizontal scanning, you go element by element 
+[leets, leetcode, leeds]
+first you check leets and leetcode, you get max string as leet
+then you check result of 1 (leet) with next element leeds
+then you get lee, which is the longest common prefix
+
+// code is written by me
+
+class Solution:
+    def longestCommonPrefix(self, strs: List[str]) -> str:
+        
+        # get number of strings in array
+        n = len(strs)
+        if n == 0:
+            return ""
+        
+        # initialize answer
+        max_str = strs[0]
+        
+        for i in range(1,n):
+            for j in range(len(max_str)):
+                
+                # handle exception, so array index doesn't go out of list
+                # this statement will only execute for very small elements in list
+                if j >= len(strs[i]):
+                    max_str = max_str[:j]
+                    break
+                
+                if strs[i][j] != max_str[j]:
+                    max_str = max_str[:j]
+                    break
+                    
+        return max_str
+
+
+// Second Algo
+// Vertical Scanning
+// check if all elements in a list are same, if yes, move to next element
+// python all method is genius way to solve this 
+
+def longestCommonPrefix(self, strs):
+    prefix=""
+    if len(strs)==0: return prefix
+    
+    for i in range(len(min(strs))):
+        key=strs[0][i]
+        if all(string[i]==key for string in strs): #vertical scan
+            prefix += key
+        else:
+            break
+    return prefix
+
+// later return and solve this problem using
+// 3 - Divide and Conquer
+// 4 - Binary search tree
+// 5 - Trie Data structure

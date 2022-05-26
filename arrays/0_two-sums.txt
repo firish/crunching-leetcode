@@ -1,0 +1,77 @@
+Question 1
+
+Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.
+
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+You can return the answer in any order.
+
+Input: nums = [2,7,11,15], target = 9
+Output: [0,1]
+Explanation: Because nums[0] + nums[1] == 9, we return [0, 1].
+
+link : https://leetcode.com/problems/two-sum/
+
+My answer:-
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        total = len(nums)
+        first = 0
+        second = 0
+        while(first != total):
+            base = nums[first]
+            while(second != total):
+                if (second == first):
+                    second += 1
+                    continue
+                if(base + nums[second] == target):
+                    return [first,second]
+                second += 1
+            second = 0
+            first += 1
+
+result - 55/57 test cases passed. 
+TLE in 2 casses. 
+
+Notes - try for a solution with < O(n2)
+
+Better solution 
+
+class Solution:    
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        for i in range(len(nums)):
+            for j in range(i+1,len(nums)):
+                if(nums[i] + nums[j] == target):
+                    return[i,j]
+            
+result - 57/57 passed
+
+
+O(n) solution using hashmap (dict in python)
+
+class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        hashmap = {}
+        for index in range(len(nums)):
+            hashmap[nums[index]] = index
+        for index in range(len(nums)):
+            complement = target - nums[index]
+            if complement in hashmap.keys() and hashmap[complement] != index:
+                return [index,hashmap[complement]]
+
+Best Solution. single loop.
+
+class Solution:    
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        hashmap={}
+        for index in range(len(nums)):
+            complement = target - nums[index]
+            if complement in hashmap.keys():
+                return[index,hashmap[complement]]
+            hashmap[nums[index]] = index
+		
+# remember to check before adding in the hashmap
+            
+
+

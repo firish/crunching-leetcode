@@ -1,0 +1,43 @@
+Given an array nums of integers, return how many of them contain an even number of digits.
+
+Input: nums = [12,345,2,6,7896]
+Output: 2
+Explanation: 
+12 contains 2 digits (even number of digits). 
+345 contains 3 digits (odd number of digits). 
+2 contains 1 digit (odd number of digits). 
+6 contains 1 digit (odd number of digits). 
+7896 contains 4 digits (even number of digits). 
+Therefore only 12 and 7896 contain an even number of digits.
+
+Input: nums = [555,901,482,1771]
+Output: 1 
+Explanation: 
+Only 1771 contains an even number of digits.
+
+
+# easy program will be to loop through array
+# then loop through digits by dividing by 10 
+# then count digits and increment for 1, but O(n2)
+
+My first code O(n) solution
+(career best result)
+
+class Solution:
+    def findNumbers(self, nums: List[int]) -> int:
+        counter=0
+        for e in nums:
+            if e/100<1 and e/10 >= 1:
+                counter +=1
+            elif e/10000<1 and e/1000>=1:
+                counter +=1
+            elif e/1000000<1 and e/100000>=1:
+                counter +=1
+        return counter
+
+result - accepted, 44ms (98.75%), 14mb (99.65%)
+
+# from the net, a good one line solution
+class Solution:
+    def findNumbers(self, nums: List[int]) -> int:
+        return len([num for num in nums if len(str(num)) % 2 == 0])

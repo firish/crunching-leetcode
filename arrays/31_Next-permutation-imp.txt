@@ -1,0 +1,97 @@
+A permutation of an array of integers is an arrangement of its members into a sequence or linear order.
+
+For example, for arr = [1,2,3], the following are considered permutations of arr: [1,2,3], [1,3,2], [3,1,2], [2,3,1].
+The next permutation of an array of integers is the next lexicographically greater permutation of its integer. 
+More formally, if all the permutations of the array are sorted in one container according to their lexicographical order, t
+hen the next permutation of that array is the permutation that follows it in the sorted container. 
+If such arrangement is not possible, the array must be rearranged as the lowest possible order (i.e., sorted in ascending order).
+
+For example, the next permutation of arr = [1,2,3] is [1,3,2].
+Similarly, the next permutation of arr = [2,3,1] is [3,1,2].
+While the next permutation of arr = [3,2,1] is [1,2,3] because [3,2,1] does not have a lexicographical larger rearrangement.
+Given an array of integers nums, find the next permutation of nums.
+
+The replacement must be in place and use only constant extra memory.
+
+
+Example 1:
+Input: nums = [1,2,3]
+Output: [1,3,2]
+
+Example 2:
+Input: nums = [3,2,1]
+Output: [1,2,3]
+
+Example 3:
+Input: nums = [1,1,5]
+Output: [1,5,1]
+ 
+Constraints:
+1 <= nums.length <= 100
+0 <= nums[i] <= 100
+
+// Wasnt able to solve without knowing the trick
+// remember trick for getting next lexicographical element
+
+1) find first decresing number
+2) switch with number with number just bigger to it (only consider nums to its right)
+3) reverse numbers to right of the number just switched
+
+// My solution
+class Solution:
+    
+    def find_decreasing(self, nums):
+        if nums[-1] > nums[-2]: return len(nums)-1
+        for i in range(len(nums)-1,0,-1):
+            j = i - 1
+            if nums[j]<nums[i]:
+                return j
+        return -1
+    
+    def switch_element(self, nums, start):
+        mini = float('inf')
+        key = -1
+        for i in range(start+1, len(nums)):
+            diff = nums[i] - nums[start]
+            if diff <= mini and diff > 0:
+                mini = min(mini, diff)
+                key = i
+        if key != -1:
+            nums[start], nums[key] = nums[key], nums[start]
+        return
+    
+    def reverse(self, nums, start):
+        i = start
+        j = len(nums)-1
+        while i < j:
+            nums[i],nums[j] = nums[j], nums[i]
+            i += 1
+            j -= 1
+        return
+    
+    def nextPermutation(self, nums: List[int]) -> None:
+        """
+        Do not return anything, modify nums in-place instead.
+        """
+        # handle corner case
+        if len(nums) == 0 or len(nums) == 1: return nums
+        
+        index = self.find_decreasing(nums)
+        # print(nums[index])
+        if index == len(nums)-1:
+            nums[-1], nums[-2] = nums[-2], nums[-1]
+            return
+        elif index == -1:
+            nums[:] = nums[::-1]   
+            return 
+        else:
+            self.switch_element(nums, index)
+            self.reverse(nums,index+1)
+	    return 
+
+result ->
+Submission Detail
+265 / 265 test cases passed.
+Status: Accepted
+Runtime: 44 ms (88%)
+Memory Usage: 13.9 MB (79%)

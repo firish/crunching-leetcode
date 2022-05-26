@@ -1,0 +1,80 @@
+Given an array arr, 
+replace every element in that array with the greatest element among the elements to its right, 
+and replace the last element with -1.
+
+After doing so, return the array.
+
+Example 1:
+
+Input: arr = [17,18,5,4,6,1]
+Output: [18,6,6,6,1,-1]
+Explanation: 
+- index 0 --> the greatest element to the right of index 0 is index 1 (18).
+- index 1 --> the greatest element to the right of index 1 is index 4 (6).
+- index 2 --> the greatest element to the right of index 2 is index 4 (6).
+- index 3 --> the greatest element to the right of index 3 is index 4 (6).
+- index 4 --> the greatest element to the right of index 4 is index 5 (1).
+- index 5 --> there are no elements to the right of index 5, so we put -1.
+Example 2:
+
+Input: arr = [400]
+Output: [-1]
+Explanation: There are no elements to the right of index 0
+   
+Hide Hint #1  
+Loop through the array starting from the end.
+Hide Hint #2  
+Keep the maximum value seen so far.
+
+My first solution, ( was a tough one to solve)
+
+// MY ALGO
+1) i = A.Length to 0
+2) key = A[i]
+3) if key < A[i-1], keep key,
+4) if key > A[i-1], A[i-1] = key, #replace with greates number on right
+5) A.pop(0) and A.append(-1) #rectify first and last element 
+
+class Solution:
+    def replaceElements(self, arr: List[int]) -> List[int]:
+        if len(arr) == 1:
+            arr[0] = -1
+            return arr
+        for i in range(len(arr)-1,-1,-1):
+            if i == 1:
+                arr.pop(i-1)
+                break
+            key = arr[i]
+            if key > arr[i-1]:
+                arr[i-1]=key
+        arr.append(-1)
+        return arr
+
+result -> Submission Detail
+15 / 15 test cases passed.
+Status: Accepted
+Runtime: 120 ms (90%)
+Memory Usage: 15.2 MB (85%)
+
+// More optimized, don't check i==1, in for loop so many times, increases overhead
+class Solution:
+    def replaceElements(self, arr: List[int]) -> List[int]:
+        if len(arr) == 1:
+            arr[0] = -1
+            return arr
+        for i in range(len(arr)-1,1,-1):
+            key = arr[i]
+            if key > arr[i-1]:
+                arr[i-1]=key
+        arr.pop(0)
+        arr.append(-1)
+        return arr
+
+// easier, but slower solution, uses max
+class Solution:
+    def replaceElements(self, arr: List[int]) -> List[int]:
+        li = []
+        for i in range(len(arr)-1):
+            li.append(max(arr[i+1:len(arr)]))
+        li.append(-1)
+        return li

@@ -1,0 +1,154 @@
+Design your implementation of the linked list. You can choose to use a singly or doubly linked list.
+A node in a singly linked list should have two attributes: val and next. 
+val is the value of the current node, and next is a pointer/reference to the next node.
+If you want to use the doubly linked list, 
+you will need one more attribute prev to indicate the previous node in the linked list. 
+Assume all nodes in the linked list are 0-indexed.
+
+Implement the MyLinkedList class:
+MyLinkedList() Initializes the MyLinkedList object.
+int get(int index) Get the value of the indexth node in the linked list. If the index is invalid, return -1.
+void addAtHead(int val) Add a node of value val before the first element of the linked list. After the insertion, the new node will be the first node of the linked list.
+void addAtTail(int val) Append a node of value val as the last element of the linked list.
+void addAtIndex(int index, int val) Add a node of value val before the indexth node in the linked list. If index equals the length of the linked list, the node will be appended to the end of the linked list. If index is greater than the length, the node will not be inserted.
+void deleteAtIndex(int index) Delete the indexth node in the linked list, if the index is valid.
+ 
+Example 1:
+Input
+["MyLinkedList", "addAtHead", "addAtTail", "addAtIndex", "get", "deleteAtIndex", "get"]
+[[], [1], [3], [1, 2], [1], [1], [1]]
+Output
+[null, null, null, null, 2, null, 3]
+Explanation
+MyLinkedList myLinkedList = new MyLinkedList();
+myLinkedList.addAtHead(1);
+myLinkedList.addAtTail(3);
+myLinkedList.addAtIndex(1, 2);    // linked list becomes 1->2->3
+myLinkedList.get(1);              // return 2
+myLinkedList.deleteAtIndex(1);    // now the linked list is 1->3
+myLinkedList.get(1);              // return 3
+ 
+Constraints:
+0 <= index, val <= 1000
+Please do not use the built-in LinkedList library.
+At most 2000 calls will be made to get, addAtHead, addAtTail, addAtIndex and deleteAtIndex.
+
+// My solution
+class _Node:
+    __slots__ = '_val','_next', '_prev'
+    
+    def __init__(self, val, next, prev):
+        self._val = val
+        self._next = next
+        self._prev = prev
+
+class MyLinkedList:
+
+    def __init__(self):
+        self._head = None
+        self._tail = None
+        self._size = 0
+
+    def get(self, index: int) -> int:
+        # if index is invalid
+        if index >= self._size:
+            return -1
+        else:
+            pos = 0
+            p = self._head
+            while pos != index:
+                pos += 1
+                p = p._next
+            return p._val
+        
+    def addAtHead(self, val: int) -> None:
+        newest = _Node(val, None, None)
+        # check if list is empty
+        if self._size == 0:
+            self._head = newest
+            self._tail = newest
+        else:
+            newest._next = self._head
+            self._head._prev = newest
+            self._head = newest
+        self._size += 1
+
+    def addAtTail(self, val: int) -> None:
+        newest = _Node(val, None, None)
+        # check if list is empty
+        if self._size == 0:
+            self._head = newest
+            self._tail = newest
+        else:
+            self._tail._next = newest
+            newest._prev = self._tail
+            self._tail = newest
+        self._size += 1
+
+    def addAtIndex(self, index: int, val: int) -> None:
+        newest = _Node(val, None, None)
+        # case 1, check if index is valid
+        if index > self._size:
+            return None
+        # case 2, check if list is empty
+        elif self._size == 0:
+            self._head = newest
+            self._tail = newest
+        # case 3, check if element is to be added at the end of list
+        elif index == self._size:
+            self._tail._next = newest
+            newest._prev = self._tail
+            self._tail = newest
+        # case 4, check if element is to be added at front of list
+        elif index == 0:
+            newest._next = self._head
+            self._head._prev = newest
+            self._head = newest
+        # case 5, insert at given position within list
+        else:
+            pos = 0
+            p = self._head
+            while pos != index-1:
+                p = p._next
+                pos += 1
+            newest._next = p._next
+            p._next._prev = newest
+            newest._prev = p
+            p._next = newest
+        self._size += 1
+            
+    def deleteAtIndex(self, index: int) -> None:
+        # return if list is empty
+        if self._size == 0:
+            return None
+        # return if invalid index 
+        elif index >= self._size:
+            return None
+        # case 1, deleting the only node in list
+        elif self._size == 1:
+            self._head = None
+            self._tail = None
+        # case 2, Delete the node at head of list
+        elif index == 0:
+            self._head._next._prev = None
+            self._head = self._head._next
+        # case 3, Delete the node at the tail of list
+        elif index == self._size-1:
+            self._tail._prev._next = None
+            self._tail = self._tail._prev
+        # case 4, Delete at specific index in the list
+        else:
+            p, pos = self._head, 0
+            while pos < index:
+                pos += 1
+                p = p._next
+            p._prev._next = p._next
+            p._next._prev = p._prev
+        self._size -= 1
+
+result -> 
+Submission Detail
+64 / 64 test cases passed.
+Status: Accepted5
+Runtime: 221 ms (72)
+Memory Usage: 15.1 MB (25%)

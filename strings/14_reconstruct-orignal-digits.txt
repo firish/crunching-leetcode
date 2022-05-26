@@ -1,0 +1,137 @@
+423. Reconstruct Original Digits from English
+Medium
+
+Given a string s containing an out-of-order English representation of digits 0-9, return the digits in ascending order.
+
+Example 1:
+Input: s = "owoztneoer"
+Output: "012"
+
+Example 2:
+Input: s = "fviefuro"
+Output: "45"
+ 
+Constraints:
+1 <= s.length <= 105
+s[i] is one of the characters ["e","g","f","i","h","o","n","s","r","u","t","w","v","x","z"].
+s is guaranteed to be valid.
+
+// My solution
+class Solution:
+    def originalDigits(self, s: str) -> str:
+        # get a hashmap with frequency of all elements
+        hashmap = defaultdict(int)
+        for char in s: hashmap[char] += 1
+        res = ""
+        
+        # identify unique characters, all even numbers can be uniquely identified
+        # if input has z, output must have 0
+        # if input has w, output must have 2
+        # if input has u, output must have 4
+        # if input has x, output must have 6
+        # if input has g, output must have 8
+        while hashmap['z'] > 0:
+            res += "0"
+            hashmap['z'] -= 1
+            hashmap['e'] -= 1
+            hashmap['r'] -= 1
+            hashmap['o'] -= 1
+        while hashmap['w'] > 0:
+            res += "2"
+            hashmap['t'] -= 1
+            hashmap['w'] -= 1
+            hashmap['o'] -= 1
+        while hashmap['u'] > 0:
+            res += "4"
+            hashmap['f'] -= 1
+            hashmap['o'] -= 1
+            hashmap['u'] -= 1
+            hashmap['r'] -= 1
+        while hashmap['x'] > 0:
+            res += "6"
+            hashmap['s'] -= 1
+            hashmap['i'] -= 1
+            hashmap['x'] -= 1
+        while hashmap['g'] > 0:
+            res += "8"
+            hashmap['e'] -= 1
+            hashmap['i'] -= 1
+            hashmap['g'] -= 1
+            hashmap['h'] -= 1
+            hashmap['t'] -= 1
+        
+        # after checking for even numbers, 
+        # if input still has o, output must have 1
+        # if input still has t, output must have 4
+        # if input still has f, output must have 5
+        # if input still has s, output must have 7
+        while hashmap['o'] > 0:
+            res += "1"
+            hashmap['o'] -= 1
+            hashmap['n'] -= 1
+            hashmap['e'] -= 1
+        while hashmap['t'] > 0:
+            res += "3"
+            hashmap['t'] -= 1
+            hashmap['h'] -= 1
+            hashmap['r'] -= 1
+            hashmap['e'] -= 2
+        while hashmap['f'] > 0:
+            res += "5"
+            hashmap['f'] -= 1
+            hashmap['i'] -= 1
+            hashmap['v'] -= 1
+            hashmap['e'] -= 1
+        while hashmap['s'] > 0:
+            res += "7"
+            hashmap['s'] -= 1
+            hashmap['e'] -= 2
+            hashmap['v'] -= 1
+            hashmap['n'] -= 1
+            
+        # number 9 in not uniquely identifiable 
+        # so after removing all numbers from hashmap, 
+        # if hashmap still has any value set to 1, it must be for 9
+        while True:
+            if any(hashmap.values()):
+                res += "9"
+                hashmap['n'] -= 2
+                hashmap['i'] -= 1
+                hashmap['e'] -= 1
+            else:
+                break
+        return "".join(sorted(res))
+
+// more clean solution
+// inspired
+class Solution:
+    def originalDigits(self, s: str) -> str:
+# building hashmap letter -> its frequency
+        count = collections.Counter(s)
+        
+        # building hashmap digit -> its frequency 
+        out = {}
+        # letter "z" is present only in "zero"
+        out["0"] = count["z"]
+        # letter "w" is present only in "two"
+        out["2"] = count["w"]
+        # letter "u" is present only in "four"
+        out["4"] = count["u"]
+        # letter "x" is present only in "six"
+        out["6"] = count["x"]
+        # letter "g" is present only in "eight"
+        out["8"] = count["g"]
+        # letter "h" is present only in "three" and "eight"
+        out["3"] = count["h"] - out["8"]
+        # letter "f" is present only in "five" and "four"
+        out["5"] = count["f"] - out["4"]
+        # letter "s" is present only in "seven" and "six"
+        out["7"] = count["s"] - out["6"]
+        # letter "i" is present in "nine", "five", "six", and "eight"
+        out["9"] = count["i"] - out["5"] - out["6"] - out["8"]
+        # letter "n" is present in "one", "nine", and "seven"
+        out["1"] = count["n"] - out["7"] - 2 * out["9"]
+
+        # building output string
+        output = [key * out[key] for key in sorted(out.keys())]
+        return "".join(output)

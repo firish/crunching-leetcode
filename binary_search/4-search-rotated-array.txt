@@ -1,0 +1,156 @@
+There is an integer array nums sorted in ascending order (with distinct values).
+
+Prior to being passed to your function, 
+nums is possibly rotated at an unknown pivot index k (1 <= k < nums.length) 
+such that the resulting array is [nums[k], nums[k+1], ..., nums[n-1], nums[0], nums[1], ..., nums[k-1]] (0-indexed). 
+For example, [0,1,2,4,5,6,7] might be rotated at pivot index 3 and become [4,5,6,7,0,1,2].
+
+Given the array nums after the possible rotation and an integer target, 
+return the index of target if it is in nums, or -1 if it is not in nums.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+
+Example 1:
+Input: nums = [4,5,6,7,0,1,2], target = 0
+Output: 4
+
+Example 2:
+Input: nums = [4,5,6,7,0,1,2], target = 3
+Output: -1
+
+Example 3:
+Input: nums = [1], target = 0
+Output: -1
+
+Constraints:
+
+1 <= nums.length <= 5000
+-104 <= nums[i] <= 104
+All values of nums are unique.
+nums is an ascending array that is possibly rotated.
+-104 <= target <= 104
+
+
+// One of the toughest questions
+// My first solution
+
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        nums = [4,5,6,7,8,1,2,3]
+        target = 2
+        # Pre Processing
+        # Handle corner case where len of nums < 2
+        if len(nums) == 0: return -1
+        if len(nums) == 1: return 0 if nums[0] == target else -1
+        
+        # Binary Search
+        left, right = 0, len(nums)-1
+        while left <= right:
+            m = (left + right) // 2
+            
+            # Searching for target, use left and right pointers as well
+            if nums[m] == target: return m
+            if nums[left] == target: return left
+            if nums[right] == target: return right
+            
+            # Check if array/sub-array is rotated
+            is_rotated = nums[right] < nums[left]
+            print(nums[left:right+1],nums[m])
+            print(is_rotated)
+            
+            # normal binary search if array is not rotated
+            if not is_rotated:
+                if nums[m] > target:
+                    right = m - 1
+                else:
+                    left = m + 1
+                    
+            # modified binary search for dealing with rotated array
+            else:
+                if nums[m] > target:
+                    if nums[right] > target:
+                        left = m + 1
+                    else:
+                        right = m - 1
+                else:
+                    if nums[right] > target:
+                        right = m - 1
+                    else:
+                        left = m + 1
+        
+        # Post Processing
+        # If BS ends without finding the key, return -1
+        # print(left, right)
+        return -1
+                
+// Failed, runs 185/ 196 test cases
+
+// My second solution
+// use two checks to decide the direction to go
+class Solution:
+    def search(self, nums: List[int], target: int) -> int:
+        
+        # Pre Processing
+        # Handle corner case where len of nums < 2
+        if len(nums) == 0: return -1
+        if len(nums) == 1: return 0 if nums[0] == target else -1
+        
+        # Binary Search
+        left, right = 0, len(nums)-1
+        while left <= right:
+            m = (left + right) // 2
+            
+            # Searching for target, use left and right pointers as well
+            if nums[m] == target: return m
+            if nums[left] == target: return left
+            if nums[right] == target: return right
+            
+            # Check if array/sub-array is rotated
+            is_rotated = nums[right] < nums[left]
+            
+            # normal binary search if array is not rotated
+            # Go right if Target is bigger than middle element, and vice-versa
+            if not is_rotated:
+                if nums[m] > target:
+                    right = m - 1
+                else:
+                    left = m + 1
+                    
+            # modified binary search for dealing with rotated array
+            # Divided into two cases
+            else:
+                # First case, Middle element bigger than target
+                if nums[m] > target:
+                    if nums[left] > nums[m]:
+                        if nums[left] > target:
+                            right = m - 1
+                        else:
+                            left = m + 1
+                    else:
+                        if nums[left] < target:
+                            right = m - 1
+                        else:
+                            left = m + 1
+                # Second case, Middle element smaller than target
+                else:
+                    if nums[right] > nums[m]:
+                        if nums[right] < target:
+                            right = m - 1
+                        else:
+                            left = m + 1
+                    else:
+                        if nums[right] < target:
+                            left = m + 1
+                        else:
+                            right = m - 1
+        
+        # Post Processing
+        # If BS ends without finding the key, return -1
+        return -1
+
+result ->Submission Detail
+195 / 195 test cases passed.
+Status: Accepted
+Runtime: 32 ms (99.5%)
+Memory Usage: 14.2 MB (94.5%)

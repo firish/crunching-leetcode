@@ -1,0 +1,83 @@
+Given an array arr of integers, 
+check if there exists two integers N and M such that N is the double of M ( i.e. N = 2 * M).
+
+Example 1:
+
+Input: arr = [10,2,5,3]
+Output: true
+Explanation: N = 10 is the double of M = 5,that is, 10 = 2 * 5.
+Example 2:
+
+Input: arr = [7,1,14,11]
+Output: true
+Explanation: N = 14 is the double of M = 7,that is, 14 = 2 * 7.
+Example 3:
+
+Input: arr = [3,1,7,11]
+Output: false
+Explanation: In this case does not exist N and M, such that N = 2 * M.
+
+My first code.
+class Solution:
+    def checkIfExist(self, arr: List[int]) -> bool:
+        hashmap = {}
+        for i,val in enumerate(arr):
+            hashmap[val] = i
+        keys = list(hashmap.keys())
+        for num in arr:
+            check1 = num*2
+            check2 = num/2
+            if check1 in keys or check2 in keys:
+                if num == 0:
+                    if arr.index(num)!=hashmap[check1]:
+                        return True
+                else:
+                    return True
+        return False
+        
+result - 
+107 / 107 test cases passed.
+Status: Accepted
+Runtime: 72 ms (51%)
+Memory Usage: 14 MB (90%)
+
+## you do not need to check for num/2 
+class Solution:
+    def checkIfExist(self, arr: List[int]) -> bool:
+        hashmap = {}
+        for i,val in enumerate(arr):
+            hashmap[val] = i
+        keys = list(hashmap.keys())
+        for num in arr:
+            check1 = num*2
+            if check1 in keys:
+                if num == 0:
+                    if arr.index(num)!=hashmap[check1]:
+                        return True
+                else:
+                    return True
+        return False
+        
+you are checking for every element, so you dont have to worry about reverse doubles.
+result- 
+107 / 107 test cases passed.
+Status: Accepted
+Runtime: 56 ms (70%)
+Memory Usage: 14.1 MB (91%)
+
+# inspired by internet, not better, but a good solution
+class Solution:
+    def checkIfExist(self, arr: List[int]) -> bool:
+        hashmap = {}
+        for i in range(len(arr)):
+            hashmap[arr[i]] = i
+            arr[i] = arr[i]*2
+        for i in range(len(arr)):
+            if arr[i] in hashmap.keys():
+                if arr[i] == 0:
+                    if arr.index(0) != hashmap[0]:
+                        return True
+                else:
+                    return True
+        return False
+        

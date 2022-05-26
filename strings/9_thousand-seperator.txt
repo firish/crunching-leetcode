@@ -1,0 +1,33 @@
+Given an integer n, add a dot (".") as the thousands separator and return it in string format.
+ 
+Example 1:
+Input: n = 987
+Output: "987"
+
+Example 2:
+Input: n = 1234
+Output: "1.234"
+
+Constraints:
+0 <= n <= 231 - 1
+
+// Easy level question asked frequently in UBER.
+
+// My solution
+
+	n = str(n)
+        l = len(n)
+        if l < 4: return str(n)
+        o = ""
+        for i in range(l):
+            if (l-i)%3==0:
+                o += "."
+            o += n[i]
+        return o if o[0] != "." else o[1:]
+
+result ->
+Submission Detail
+69 / 69 test cases passed.
+Status: Accepted
+Runtime: 24 ms (98%)
+Memory Usage: 13.9 MB
