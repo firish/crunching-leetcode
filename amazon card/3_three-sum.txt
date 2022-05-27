@@ -1,0 +1,92 @@
+Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+Notice that the solution set must not contain duplicate triplets. 
+
+Example 1:
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+
+Example 2:
+Input: nums = []
+Output: []
+
+Example 3:
+Input: nums = [0]
+Output: []
+ 
+Constraints:
+0 <= nums.length <= 3000
+-105 <= nums[i] <= 105
+
+
+// Note, second point, about unique triplets is a headache
+// My first solution
+// No great, space complexity is O(max(N,k!)), where N is number of elements in input and k is number of triplets in output
+
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        if len(nums) < 3: return []
+        hashmap = {}
+        for i, el in enumerate(nums): hashmap[el] = i
+        output = []
+        triplet_check = {}
+        for i in range(len(nums)):
+            comp = 0 - nums[i]
+            for j in range(i+1,len(nums)):
+                target = comp
+                target -= nums[j]
+                if target in hashmap and hashmap[target] != i and hashmap[target] != j: 
+                    triplet = (nums[i], nums[j], target)
+                    if triplet not in triplet_check: 
+                        output.append((nums[i], nums[j], target))
+			# Attaching all permutations, can use itertools to make code cleaner
+                        triplet_check[(nums[i], nums[j], target)] = 1
+                        triplet_check[(nums[i], target, nums[j])] = 1
+                        triplet_check[(nums[j], nums[i], target)] = 1
+                        triplet_check[(nums[j], target, nums[i])] = 1
+                        triplet_check[(target, nums[i], nums[j])] = 1
+                        triplet_check[(target, nums[j], nums[i])] = 1
+        return output
+
+318 / 318 test cases passed.
+Status: Accepted
+Runtime: 3166 ms
+Memory Usage: 29.1 MB
+
+
+// To improve on memory, consider second solution
+// use a sorted array
+// this way, same elements are next to each other and can be skipped conveniently
+
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        if len(nums) < 3: return []
+        
+        nums.sort()
+        output = []
+        # prev makes sure pivot element is not same to prev element in nums as we don't need duplicates
+        prev = 1.1 
+        
+        
+        for i in range(len(nums)-2):
+            pivot = nums[i]
+            if pivot > 0: break # since array is sorted, 3 +ve numbers cannot give a 0 sum
+            if pivot == prev: continue # skip duplicates
+              
+            # Two pointer approach
+            low, high = i+1, len(nums)-1
+            while low < high and low :
+                complement = pivot + nums[low] + nums[high]
+                if complement == 0:
+                    output.append([pivot, nums[low], nums[high]])
+                    low += 1
+                    high -= 1
+                    # to avoid internal duplicates
+                    # cases like [-2,0,0,2,2] where we will end up [[-2,0,2][-2,0,2]]
+                    while nums[low-1] == nums[low] and low < high: low += 1 
+                elif complement > 0:
+                    high -= 1
+                else:
+                    low += 1
+            
+            prev = pivot # update prev with current element before next iteration
+        return output

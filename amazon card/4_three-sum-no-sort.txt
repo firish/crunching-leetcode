@@ -1,0 +1,55 @@
+Given an integer array nums, 
+return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
+Notice that the solution set must not contain duplicate triplets. 
+Additional: can not use sorting on input array
+
+Example 1:
+Input: nums = [-1,0,1,2,-1,-4]
+Output: [[-1,-1,2],[-1,0,1]]
+
+Example 2:
+Input: nums = []
+Output: []
+
+Example 3:
+Input: nums = [0]
+Output: []
+ 
+Constraints:
+0 <= nums.length <= 3000
+-105 <= nums[i] <= 105
+
+
+// My solution, using hashset
+// without itertools 
+class Solution:
+    def threeSum(self, nums: List[int]) -> List[List[int]]:
+        if len(nums) < 3: return []
+        
+        hashmap = {}
+        for i, el in enumerate(nums): hashmap[el] = i
+            
+        def calc_triplet(i,j,k):
+            if i >= j and i >= k and j >= k: return [i, j, k]
+            elif i >= j and i >= k and j < k: return [i, k, j]
+            elif j >= i and j >= k and i >= k: return [j, i, k]
+            elif j >= i and j >= k and i < k: return [j, k, i]
+            elif k >= i and k >= j and i >= j: return [k, i, j]
+            else: return [k, j, i]
+            
+        output = []
+        triplet_check = {}
+        for i in range(len(nums)):
+            comp = 0 - nums[i]
+            for j in range(i+1,len(nums)):
+                target = comp
+                target -= nums[j]
+                if target in hashmap and hashmap[target] != i and hashmap[target] != j: 
+                    triplet = tuple(calc_triplet(nums[i], nums[j], target))
+                    if triplet not in triplet_check: 
+                        output.append(triplet)
+                        triplet_check[tuple(triplet)] = 1
+        return output
+
+Runtime: 6258 ms, faster than 9.54% of Python3 online submissions for 3Sum.
+Memory Usage: 18.3 MB, less than 18.56% of Python3 online submissions for 3Sum. 
