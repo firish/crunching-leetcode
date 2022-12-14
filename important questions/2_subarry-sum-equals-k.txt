@@ -1,0 +1,58 @@
+560. Subarray Sum Equals K
+Medium
+
+Given an array of integers nums and an integer k, return the total number of subarrays whose sum equals to k.
+A subarray is a contiguous non-empty sequence of elements within an array.
+
+ 
+Example 1:
+Input: nums = [1,1,1], k = 2
+Output: 2
+
+Example 2:
+Input: nums = [1,2,3], k = 3
+Output: 2
+ 
+Constraints:
+1 <= nums.length <= 2 * 104
+-1000 <= nums[i] <= 1000
+-107 <= k <= 107
+
+// The negtive numbers make this question very tricky
+// brute force is easy
+// O(n) is tough
+
+// My first solution, all explains prefix sum property (imp)
+class Solution:
+    def subarraySum(self, nums: List[int], k: int) -> int:
+        count, s, sums = 0, 0, []
+        hashmap = defaultdict(int)
+        
+        # This problem is solved using the prefix funda
+        # populate the sums array where i th index has the cummulative sum from i = 0 to current index
+        
+        # Now, sum of all elements from first index to j is at sums[j]
+        # for getting sum of values from a index other than first index, the following property is used
+        # sum(nums(i != 0, j)) = sums(i, j) - sums(0, i-1)
+        
+        # Now, we want to find sub-arrays that add upto a target value k
+        # so we want to find arrays where sums[j] - sums[i-1] == k
+        # so sums[i-1] = sums[j] - k
+        # so traverse through the sums array, where each element is sums[j], subract k, and check
+        # if the prefixsum sums[i-1] exists in the hashmap (hashmap has frequency of elements is sums array)
+        
+        # let first element be 0
+        # so if we find target directly in the array (eg k = 5, and element 5 appears in array)
+        # we do 5 - 5 and find 0 in hashmap to increase array count by 1
+        hashmap[0] = 1
+        
+        for i in range(len(nums)): 
+            s += nums[i]
+            sums.append(s)
+            if sums[i] - k in hashmap: count += hashmap[sums[i]-k]
+            hashmap[s] += 1
+        return count
+
+result ->>
+Runtime: 412 ms, faster than 30.13% of Python3 online submissions for Subarray Sum Equals K.
+Memory Usage: 16.6 MB, less than 73.06% of Python3 online submissions for Subarray Sum Equals K.

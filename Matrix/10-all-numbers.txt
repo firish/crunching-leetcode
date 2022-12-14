@@ -1,0 +1,47 @@
+2133. Check if Every Row and Column Contains All Numbers
+Easy
+
+An n x n matrix is valid if every row and every column contains all the integers from 1 to n (inclusive).
+
+Given an n x n integer matrix matrix, return true if the matrix is valid. Otherwise, return false.
+
+Example 1:
+Input: matrix = [[1,2,3],[3,1,2],[2,3,1]]
+Output: true
+Explanation: In this case, n = 3, and every row and column contains the numbers 1, 2, and 3.
+Hence, we return true.
+
+Example 2:
+Input: matrix = [[1,1,1],[1,2,3],[1,2,3]]
+Output: false
+Explanation: In this case, n = 3, but the first row and the first column do not contain the numbers 2 or 3.
+Hence, we return false.
+ 
+Constraints:
+n == matrix.length == matrix[i].length
+1 <= n <= 100
+1 <= matrix[i][j] <= n
+
+// My solution
+class Solution:
+    def checkValid(self, matrix: List[List[int]]) -> bool:
+        N = len(matrix)
+        S = N*(N+1)/2
+        row_dics = [S]*N
+        col_dics = [S]*N
+        for r in range(N):
+            vis = {}
+            for c in range(N):
+                if matrix[r][c] in vis: return False
+                else:
+                    vis[matrix[r][c]] = 1
+                row_dics[r] -= matrix[r][c]
+                col_dics[c] -= matrix[r][c]
+                if row_dics[r] < 0 or col_dics[c] < 0: return False
+        return not (any(row_dics) or any(col_dics))
+
+Submission Detail
+226 / 226 test cases passed.
+Status: Accepted
+Runtime: 876 ms
+Memory Usage: 14.5 MB

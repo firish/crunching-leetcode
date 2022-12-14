@@ -1,0 +1,87 @@
+463. Island Perimeter
+Easy
+
+You are given row x col grid representing a map where grid[i][j] = 1 represents land and grid[i][j] = 0 represents water.
+
+Grid cells are connected horizontally/vertically (not diagonally). 
+The grid is completely surrounded by water, and there is exactly one island (i.e., one or more connected land cells).
+
+The island doesn't have "lakes", meaning the water inside isn't connected to the water around the island. 
+One cell is a square with side length 1. The grid is rectangular, width and height don't exceed 100. 
+Determine the perimeter of the island.
+
+ 
+Example 1:
+Input: grid = [[0,1,0,0],[1,1,1,0],[0,1,0,0],[1,1,0,0]]
+Output: 16
+Explanation: The perimeter is the 16 yellow stripes in the image above.
+
+Example 2:
+Input: grid = [[1]]
+Output: 4
+
+Example 3:
+Input: grid = [[1,0]]
+Output: 4 
+
+Constraints:
+row == grid.length
+col == grid[i].length
+1 <= row, col <= 100
+grid[i][j] is 0 or 1.
+There is exactly one island in grid.
+
+from collections import deque
+
+class Solution:
+    def islandPerimeter(self, grid: List[List[int]]) -> int:
+        
+        N, M = len(grid[0]), len(grid)
+        nbrs = [[-1,0], [0,1], [1,0], [0,-1]] # directions of neighbors
+        vis = {} # dict to keep track of visited squares
+        peri = 0
+        q = deque()
+        
+        # Get the starting point of the island
+        def get_start():
+            for r in range(M):
+                for c in range(N):
+                    if grid[r][c] == 1:
+                        q.append([r, c])
+                        vis[(r, c)] = 1
+                if len(q) > 0:
+                    return 1
+            return -1
+        
+        # Check if a grid position is valid
+        def valid(r,c):
+            if r < 0 or c < 0 or r >= M or c >= N: return False
+            return True
+        
+        # calculate peri of current square
+        def perimeter(r, c):
+            p = 4
+            for i in range(len(nbrs)):
+                r2, c2 = r+nbrs[i][0], c+nbrs[i][1]
+                if not valid(r2, c2): continue
+                if grid[r2][c2] == 1:
+                    p -= 1
+                    if (r2, c2) not in vis:
+                        vis[(r2, c2)] = 1
+                        q.append([r2, c2])
+            return p
+                
+        if get_start() == -1: return 0
+                
+        while len(q) != 0:
+            # print(q)
+            point = q.popleft()
+            r, c = point[0], point[1]
+            if valid(r, c):
+                # if (r, c) not in vis:
+                peri += perimeter(r, c)
+        
+        return peri
+
+Runtime: 885 ms, faster than 46.48% of Python3 online submissions for Island Perimeter.
+Memory Usage: 15.2 MB, less than 35.12% of Python3 online submissions for Island Perimeter.

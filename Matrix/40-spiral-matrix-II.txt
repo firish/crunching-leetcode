@@ -1,0 +1,110 @@
+Given a positive integer n, generate an n x n matrix filled with elements from 1 to n2 in spiral order.
+
+
+Example 1:
+Input: n = 3
+Output: [[1,2,3],[8,9,4],[7,6,5]]
+
+Example 2:
+Input: n = 1
+Output: [[1]] 
+
+Constraints:
+1 <= n <= 20
+
+
+// My solution
+class Solution:
+    def generateMatrix(self, n: int) -> List[List[int]]:
+        
+        # define all edges
+        top = left = 0
+        bottom = right = n - 1
+        
+        # initialise matrix
+        mat = [[0 for x in range(n)] for y in range(n)]
+        row = col = i = 0
+
+        while i < n**2:
+            # Traverse clock wise around the outher edges of MAT
+            # Right -> Down -> left -> Top
+            
+            # STEP 1 : Go Right 
+            while row == top and col <= right:
+                mat[row][col] = i+1
+                i += 1
+                col += 1
+            # col is now right+1, so reduce col by 1
+            # Top edge is travesed, so increase top by 1
+            # 1st row is filled, so move row down + 1
+            col -= 1
+            top += 1
+            row += 1
+            
+            # STEP 2 : Go Down 
+            while row <= bottom and col == right:
+                mat[row][col] = i+1
+                i += 1
+                row += 1
+            # row is now bottom+1, so reduce row by 1
+            # Right edge is travesed, so reduce right by 1
+            # Last col is filled, so move col to left + 1
+            row -= 1
+            right -= 1
+            col -= 1
+            
+            # STEP 3: Go Left
+            while row == bottom and col >= left:
+                mat[row][col] = i+1
+                i += 1
+                col -= 1
+            # col is now left-1, so increase col by 1
+            # Bottom edge is travesed, so decrease bottom by 1
+            # Last row is filled, so move row up + 1
+            col += 1
+            bottom -= 1
+            row -= 1
+            
+            # STEP 4: Go Up
+            while row >= top and col == left:
+                mat[row][col] = i+1
+                i += 1
+                row -= 1
+            # row is now top-1, so increase row by 1
+            # Left edge is travesed, so increase left by 1
+            # Left col is filled, so move col to right + 1
+            row += 1
+            left += 1
+            col += 1
+            
+            # while loop runs unitl n*n elements are placed
+        return mat
+
+// Another approach is to go layer by laye
+// Instead of using while loop, use for loop with proper initilaization and stopping condition for iter
+// example in Java
+class Solution {
+    public int[][] generateMatrix(int n) {
+        int[][] result = new int[n][n];
+        int cnt = 1;
+        for (int layer = 0; layer < (n + 1) / 2; layer++) {
+            // direction 1 - traverse from left to right
+            for (int ptr = layer; ptr < n - layer; ptr++) {
+                result[layer][ptr] = cnt++;
+            }
+            // direction 2 - traverse from top to bottom
+            for (int ptr = layer + 1; ptr < n - layer; ptr++) {
+                result[ptr][n - layer - 1] = cnt++;
+            }
+            // direction 3 - traverse from right to left
+            for (int ptr = layer + 1; ptr < n - layer; ptr++) {
+                result[n - layer - 1][n - ptr - 1] = cnt++;
+            }
+            // direction 4 - traverse from bottom to top
+            for (int ptr = layer + 1; ptr < n - layer - 1; ptr++) {
+                result[n - ptr - 1][layer] = cnt++;
+            }
+        }
+        return result;
+    }
+}

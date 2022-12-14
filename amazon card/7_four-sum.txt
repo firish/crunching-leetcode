@@ -1,0 +1,114 @@
+18. 4Sum
+Medium
+
+Given an array nums of n integers, return an array of all the unique quadruplets [nums[a], nums[b], nums[c], nums[d]] such that:
+
+0 <= a, b, c, d < n
+a, b, c, and d are distinct.
+nums[a] + nums[b] + nums[c] + nums[d] == target
+You may return the answer in any order.
+
+Example 1:
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+
+Example 2:
+Input: nums = [2,2,2,2,2], target = 8
+Output: [[2,2,2,2] 
+
+Constraints:
+1 <= nums.length <= 200
+-109 <= nums[i] <= 109
+-109 <= target <= 109
+
+
+// My solution 1
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        arr = []
+        nums.sort()
+        unique = {}
+            
+        for i in range(len(nums)-3):
+            for j in range(i+1, len(nums)-2):
+                lo = j+1
+                hi = len(nums)-1
+                while lo < hi:
+                    s = nums[i]+nums[j]+nums[lo]+nums[hi]
+                    if s == target:
+                        x = tuple(sorted([nums[i],nums[j],nums[lo],nums[hi]]))
+                        if x not in unique:
+                            arr.append([nums[i],nums[j],nums[lo],nums[hi]])
+                            unique[x] = 1
+                        hi -= 1
+                        lo += 1
+                    elif s > target:
+                        hi -= 1
+                    else:
+                        lo += 1
+        return arr
+
+
+289 / 289 test cases passed.
+Status: Accepted
+Runtime: 1592 ms (36%)
+Memory Usage: 13.9 MB (62%)
+
+
+// My solution 2
+// using three loops, straightforward
+class Solution:
+    def fourSum(self, nums: List[int], target: int) -> List[List[int]]:
+        arr = []
+        nums.sort()
+        unique = {}
+        hashmap = {}
+        for i, el in enumerate(nums): hashmap[el] = i
+            
+        for i in range(len(nums)-3):
+            for j in range(i+1, len(nums)-2):
+                for k in range(j+1, len(nums)):
+                    curr = nums[i]+nums[j]+nums[k]
+                    curr = target - curr
+                    if curr in hashmap and hashmap[curr] not in [i, j, k]:
+                        quad = tuple(sorted([nums[i], nums[j], nums[k], curr]))
+                        if quad not in unique:
+                            arr.append(quad)
+                            unique[quad] = 1
+        return arr
+
+
+
+// Clean, inspired solution
+class Solution(object):
+    def threeSum(self, nums, target):
+        results = []
+        nums.sort()
+        for i in range(len(nums)-2):
+            l = i + 1; r = len(nums) - 1
+            t = target - nums[i]
+            if i == 0 or nums[i] != nums[i-1]:
+                while l < r:
+                    s = nums[l] + nums[r]
+                    if s == t:
+                        results.append([nums[i], nums[l], nums[r]])
+                        while l < r and nums[l] == nums[l+1]: l += 1
+                        while l < r and nums[r] == nums[r-1]: r -= 1
+                        l += 1
+                        r -=1
+                    elif s < t:
+                        l += 1
+                    else:
+                        r -= 1
+        return results
+
+    def fourSum(self, nums, target):
+        results = []
+        nums.sort()
+        for i in range(len(nums)-3):
+            if i == 0 or nums[i] != nums[i-1]:
+                threeResult = self.threeSum(nums[i+1:], target-nums[i])
+                for item in threeResult:
+                    results.append([nums[i]] + item)
+        return results
+                

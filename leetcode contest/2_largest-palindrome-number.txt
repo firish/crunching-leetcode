@@ -1,0 +1,79 @@
+2384. Largest Palindromic Number
+
+User Accepted:4680
+User Tried:6923
+Total Accepted:4803
+Total Submissions:21355
+Difficulty:Medium
+
+You are given a string num consisting of digits only.
+Return the largest palindromic integer (in the form of a string) that can be formed using digits taken from num. 
+It should not contain leading zeroes.
+
+Notes:
+You do not need to use all the digits of num, but you must use at least one digit.
+The digits can be reordered.
+ 
+Example 1:
+Input: num = "444947137"
+Output: "7449447"
+Explanation: 
+Use the digits "4449477" from "444947137" to form the palindromic integer "7449447".
+It can be shown that "7449447" is the largest palindromic integer that can be formed.
+
+Example 2:
+Input: num = "00009"
+Output: "9"
+Explanation: 
+It can be shown that "9" is the largest palindromic integer that can be formed.
+Note that the integer returned should not contain leading zeroes.
+ 
+Constraints:
+1 <= num.length <= 105
+num consists of digits.
+
+// My solution
+class Solution:
+    def largestPalindromic(self, num: str) -> str:
+        h = defaultdict(int)
+        for c in num: h[c] += 1
+        maxi = 0
+        dig = []
+        for k, v in h.items():
+            if v %2 == 1 and int(k) > maxi: maxi = int(k)
+            if v >= 2:
+                N = v // 2
+                dig += ([k]*N)
+        dig.sort()
+        if len(h) == 1 and len(dig) != 0: res = ''
+        else: res = str(maxi)
+        for c in dig: res = str(c) + res + str(c)
+        return res if res[0] != '0' else str(maxi)
+
+// using heap to improve from O(nlogn) to O(n)
+from collections import defaultdict
+import heapq 
+
+class Solution:
+    def largestPalindromic(self, num: str) -> str:
+        h = defaultdict(int)
+        for c in num: 
+            h[c] += 1
+        maxi, dig = 0, []
+        for k, v in h.items():
+            if v %2 == 1 and int(k) > maxi: 
+                maxi = int(k)
+            if v >= 2:
+                N = v // 2
+                dig += ([k]*N)
+        
+        if len(h) == 1 and len(dig) != 0: 
+            res = ''
+        else: 
+            res = str(maxi)
+        
+        heapq.heapify(dig)
+        for _ in range(len(dig)): 
+            c = heapq.heappop(dig)
+            res = str(c) + res + str(c)
+        return res if res[0] != '0' else str(maxi)

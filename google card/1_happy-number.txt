@@ -1,0 +1,66 @@
+Write an algorithm to determine if a number n is happy.
+
+A happy number is a number defined by the following process:
+
+Starting with any positive integer, replace the number by the sum of the squares of its digits.
+Repeat the process until the number equals 1 (where it will stay), or it loops endlessly in a cycle which does not include 1.
+Those numbers for which this process ends in 1 are happy.
+Return true if n is a happy number, and false if not.
+
+ 
+
+Example 1:
+
+Input: n = 19
+Output: true
+Explanation:
+12 + 92 = 82
+82 + 22 = 68
+62 + 82 = 100
+12 + 02 + 02 = 1
+
+Example 2:
+Input: n = 2
+Output: false
+ 
+Constraints:
+1 <= n <= 231 - 1
+
+
+// My First solution
+
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        limiter = 50
+        
+        def get_sum(n):
+            s = 0
+            for dig in n:
+                s += (int(dig)*int(dig))
+            return s
+        
+        while limiter > 0:
+            n = get_sum(str(n))
+            if n == 1: return True
+            else: limiter -= 1
+        return False
+
+result ->
+Runtime: 46 ms, faster than 56.49% of Python3 online submissions for Happy Number.
+Memory Usage: 13.8 MB, less than 96.89% of Python3 online submissions for Happy Number.
+
+class Solution:
+    def isHappy(self, n: int) -> bool:
+        # limiter = 6
+        cycle = {}
+        
+        def get_sum(n):
+            s = 0
+            for dig in str(n): s += (int(dig)*int(dig))
+            return s
+        
+        while n not in cycle:
+            cycle[n] = True
+            n = get_sum(n)
+            if n == 1: return True
+        return False

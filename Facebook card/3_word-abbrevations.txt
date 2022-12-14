@@ -1,0 +1,125 @@
+A string can be abbreviated by replacing any number of non-adjacent, non-empty substrings with their lengths. 
+The lengths should not have leading zeros.
+
+For example, a string such as "substitution" could be abbreviated as (but not limited to):
+"s10n" ("s ubstitutio n")
+"sub4u4" ("sub stit u tion")
+"12" ("substitution")
+"su3i1u2on" ("su bst i t u ti on")
+"substitution" (no substrings replaced)
+
+The following are not valid abbreviations:
+"s55n" ("s ubsti tutio n", the replaced substrings are adjacent)
+"s010n" (has leading zeros)
+"s0ubstitution" (replaces an empty substring)
+
+Given a string word and an abbreviation abbr, return whether the string matches the given abbreviation.
+A substring is a contiguous non-empty sequence of characters within a string.
+
+Example 1:
+Input: word = "internationalization", abbr = "i12iz4n"
+Output: true
+Explanation: The word "internationalization" can be abbreviated as "i12iz4n" ("i nternational iz atio n").
+
+Example 2:
+Input: word = "apple", abbr = "a2e"
+Output: false
+Explanation: The word "apple" cannot be abbreviated as "a2e".
+ 
+Constraints:
+1 <= word.length <= 20
+word consists of only lowercase English letters.
+1 <= abbr.length <= 10
+abbr consists of lowercase English letters and digits.
+All the integers in abbr will fit in a 32-bit integer.
+
+
+// My first solution
+class Solution:
+    def validWordAbbreviation(self, word: str, abbr: str) -> bool:
+        # Will be using ord() which gives ascii value of a char to determine if char is a digit
+        # digits have an ascii range (48 (0) to 57 (9))
+        
+        # Question has too many edge cases, handled using an if-else ladder
+        i, j = 0, 0
+        
+        # Edge case 1, abbrevated string is longer than orignal string
+        if len(abbr) >  len(word): return False
+        
+        while i < len(abbr):
+            asci = ord(abbr[i])
+            
+            # edge case 2, leading 0 found in abbrevation
+            if asci == 48: return False   
+            
+            # found a char that is part of normal string, so move both i and j pointers
+            if asci < 49 or asci > 57: 
+                j += 1; i += 1
+            else:        
+                # found a char that's part of the abbrevation
+                digits = ''
+                # get the length of current abbrevation (eg 4, 12, .. )
+                while asci >= 48 and asci <=57:
+                    digits += abbr[i]
+                    i += 1
+                    if i < len(abbr): asci = ord(abbr[i])
+                    else: break
+                digits = int(digits)
+                
+                # edge case 3, if len of digits is greater than len of entire word
+                if digits > len(word): return False
+                
+                # move j pointer ahead by the len of abbrevation 
+                for k in range(digits): j += 1
+                
+                # edge case 5
+                if j == len(word): 
+                    if i >= len(abbr): return True
+                    # j has reached edge of word but i hasnt reached end of abbrevation
+                    # this means the length in abbrevation string was more than true length
+                    else: return False
+                
+                # this means the length in abbrevation string was more than true length
+                elif j > len(word): return False
+                
+                # this means the length in abbrevation string was less than true length
+                elif i >= len(abbr) and j < len(word): return False
+                
+                # this means the length in abbrevation string was less than true length
+                elif i+1 < len(abbr) and j+1 >= len(word): return False
+                
+                # this means the length in abbrevation string was false (can be more or less)
+                elif abbr[i] != word[j]: return False
+        
+        # edge case 6, abbrevation string had no abbrevation
+        if j < len(word): return False
+        else: return True
+
+result ->
+Submission Detail
+322 / 322 test cases passed.
+Status: Accepted
+Runtime: 40 ms (60%)
+Memory Usage: 13.9 MB (29%)
+
+
+// inspired, cleaner code
+class Solution:
+    def validWordAbbreviation(self, word, abbr):
+        i = j = 0
+        m, n = len(word), len(abbr)
+        while i < m and j < n:
+            if word[i] == abbr[j]:
+                i += 1
+                j += 1
+            elif abbr[j] == "0":
+                return False
+            elif abbr[j].isnumeric():
+                k = j
+                while k < n and abbr[k].isnumeric():
+                    k += 1
+                i += int(abbr[j:k])
+                j = k
+            else:
+                return False
+        return i == m and j == n

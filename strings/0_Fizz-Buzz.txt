@@ -1,0 +1,120 @@
+Given an integer n, return a string array answer (1-indexed) where:
+
+answer[i] == "FizzBuzz" if i is divisible by 3 and 5.
+answer[i] == "Fizz" if i is divisible by 3.
+answer[i] == "Buzz" if i is divisible by 5.
+answer[i] == i (as a string) if none of the above conditions are true.
+
+Example 1:
+Input: n = 3
+Output: ["1","2","Fizz"]
+
+Example 2:
+Input: n = 5
+Output: ["1","2","Fizz","4","Buzz"]
+
+Example 3:
+Input: n = 15
+Output: ["1","2","Fizz","4","Buzz","Fizz","7","8","Fizz","Buzz","11","Fizz","13","14","FizzBuzz"]
+
+
+// My solution
+class Solution:
+    def fizzBuzz(self, n: int) -> List[str]:
+        output = []
+        for i in range(1, n+1):
+            if i % 3 == 0 and i % 5 == 0: output.append('FizzBuzz')
+            elif i % 3 == 0: output.append('Fizz')
+            elif i % 5 == 0: output.append('Buzz')
+            else: output.append(str(i))
+        return output
+ 
+
+
+Runtime: 50 ms, faster than 73.51% of Python3 online submissions for Fizz Buzz.
+Memory Usage: 15 MB, less than 83.97% of Python3 online submissions for Fizz Buzz.
+
+
+
+This approach won't reduce the asymptotic complexity, but proves to be a neater solution when FizzBuzz comes with a twist. What if FizzBuzz is now FizzBuzzJazz i.e.
+
+3 ---> "Fizz" , 5 ---> "Buzz", 7 ---> "Jazz"
+If you try to solve this with the previous approach the program would have too many conditions to check:
+
+Divisible by 3
+Divisible by 5
+Divisible by 7
+Divisible by 3 and 5
+Divisible by 3 and 7
+Divisible by 7 and 3
+Divisible by 3 and 5 and 7
+Not divisible by 3 or 5 or 7.
+This way if the FizzBuzz mappings increase, the conditions would grow exponentially in your program.
+
+so sol becomes
+class Solution:
+    def fizzBuzz(self, n: int) -> List[str]:
+        ans = []
+        for num in range(1,n+1):
+            divisible_by_3 = (num % 3 == 0)
+            divisible_by_5 = (num % 5 == 0)
+            num_ans_str = ""
+            if divisible_by_3: num_ans_str += "Fizz"
+            if divisible_by_5: num_ans_str += "Buzz"
+            if not num_ans_str: num_ans_str = str(num)
+            ans.append(num_ans_str)  
+        return ans
+
+
+// suppose Mappings grow a lot, to 20, then?
+class Solution:
+    def fizzBuzz(self, n: int) -> List[str]:
+        # ans list
+        ans = []
+
+        # Dictionary to store all fizzbuzz mappings
+        fizz_buzz_dict = {3 : "Fizz", 5 : "Buzz"}
+        
+        # List of divisors which we will iterate over.
+        divisors = [3, 5]
+
+        for num in range(1, n + 1):
+
+            num_ans_str = []
+
+            for key in divisors:
+                # If the num is divisible by key,
+                # then add the corresponding string mapping to current num_ans_str
+                if num % key == 0:
+                    num_ans_str.append(fizz_buzz_dict[key])
+
+            if not num_ans_str:
+                num_ans_str.append(str(num))
+
+            # Append the current answer str to the ans list
+            ans.append(''.join(num_ans_str))
+
+        return ans
+
+
+// inspired, without using mod operator
+class Solution:
+    def fizzBuzz(self, n: int) -> List[str]:
+        sol = [''] * n
+        three, five = 3, 5
+        
+        for i in range(1, n+1):
+            if i == three == five:
+                sol[i-1] = 'FizzBuzz'
+                three += 3
+                five += 5
+            elif i == five:
+                sol[i-1] = 'Buzz'
+                five += 5
+            elif i == three:
+                sol[i-1] = 'Fizz'
+                three += 3
+            else:
+                sol[i-1] = str(i)
+
+        return sol

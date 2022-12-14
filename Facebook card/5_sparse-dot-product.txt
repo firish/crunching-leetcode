@@ -1,0 +1,91 @@
+1570. Dot Product of Two Sparse Vectors
+Medium
+
+Given two sparse vectors, compute their dot product.
+
+Implement class SparseVector:
+SparseVector(nums) Initializes the object with the vector nums
+dotProduct(vec) Compute the dot product between the instance of SparseVector and vec
+
+A sparse vector is a vector that has mostly zero values, 
+you should store the sparse vector efficiently and compute the dot product between two SparseVector.
+
+Follow up: What if only one of the vectors is sparse?
+
+Example 1:
+Input: nums1 = [1,0,0,2,3], nums2 = [0,3,0,4,0]
+Output: 8
+Explanation: v1 = SparseVector(nums1) , v2 = SparseVector(nums2)
+v1.dotProduct(v2) = 1*0 + 0*3 + 0*0 + 2*4 + 3*0 = 8
+
+Example 2:
+Input: nums1 = [0,1,0,0,0], nums2 = [0,0,0,0,2]
+Output: 0
+Explanation: v1 = SparseVector(nums1) , v2 = SparseVector(nums2)
+v1.dotProduct(v2) = 0*0 + 1*0 + 0*0 + 0*0 + 0*2 = 0
+
+Example 3:
+Input: nums1 = [0,1,0,0,2,0,0], nums2 = [1,0,0,0,3,0,4]
+Output: 6
+ 
+Constraints:
+n == nums1.length == nums2.length
+1 <= n <= 10^5
+0 <= nums1[i], nums2[i] <= 100
+
+
+// example 1, simplest solution
+class SparseVector:
+    def __init__(self, nums: List[int]):
+        self.arr = nums
+
+    # Return the dotProduct of two sparse vectors
+    def dotProduct(self, vec: 'SparseVector') -> int:
+        s = 0
+        for i in range(len(self.arr)): 
+            if self.arr[i] != 0 and vec.arr[i] != 0:
+                s += self.arr[i] * vec.arr[i]
+        return s
+
+
+// using hashmap
+// to save storage, only store non-zero values
+class SparseVector:
+    def __init__(self, nums: List[int]):
+        self.map = {}
+        for i, el in enumerate(nums): 
+            if el != 0: 
+                self.map[i] = el
+
+    # Return the dotProduct of two sparse vectors
+    def dotProduct(self, vec: 'SparseVector') -> int:
+        s = 0
+        for i in self.map.keys():
+            if i in vec.map:
+                s += self.map[i]*vec.map[i]
+        return s
+
+
+// using two-pointers and arrays
+// if interviewer wants to avoid hashmaps
+class SparseVector:
+    def __init__(self, nums: List[int]):
+        self.pairs = []
+        for i, el in enumerate(nums): 
+            if el != 0: 
+                self.pairs.append([i,el])
+
+    # Return the dotProduct of two sparse vectors
+    def dotProduct(self, vec: 'SparseVector') -> int:
+        s = 0
+        i, j = 0, 0
+        while i < len(self.pairs) and j < len(vec.pairs):
+            if self.pairs[i][0] == vec.pairs[j][0]:
+                s += self.pairs[i][1]*vec.pairs[j][1]
+                i += 1
+                j += 1
+            elif self.pairs[i][0] < vec.pairs[j][0]:
+                i += 1
+            else:
+                j += 1
+        return s
