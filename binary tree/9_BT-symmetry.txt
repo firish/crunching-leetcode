@@ -1,0 +1,50 @@
+101. Symmetric Tree
+Easy
+
+Given the root of a binary tree, check whether it is a mirror of itself (i.e., symmetric around its center).
+
+Example 1:
+Input: root = [1,2,2,3,4,4,3]
+Output: true
+
+Example 2:
+Input: root = [1,2,2,null,3,null,3]
+Output: false
+ 
+
+Constraints:
+The number of nodes in the tree is in the range [1, 1000].
+-100 <= Node.val <= 100
+ 
+
+Follow up: Could you solve it both recursively and iteratively?
+
+// My solution
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def isSymmetric(self, root: Optional[TreeNode]) -> bool:
+        res = True
+        def check(pl, pr):
+            nonlocal res
+            if (pl and not pr) or (pr and not pl):
+                res = False
+                return 
+            if pl and pr:
+                if pl.val == pr.val:
+                    check(pl.left, pr.right)
+                    check(pl.right, pr.left)
+                else:
+                    res = False
+                    return
+        
+        check(root, root)
+        return res
+
+Runtime: 36 ms, faster than 92.15% of Python3 online submissions for Symmetric Tree.
+Memory Usage: 13.9 MB, less than 60.97% of Python3 online submissions for Symmetric Tree.

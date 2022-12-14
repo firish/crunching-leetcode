@@ -1,0 +1,86 @@
+99. Recover Binary Search Tree
+Medium
+You are given the root of a binary search tree (BST), 
+where the values of exactly two nodes of the tree were swapped by mistake. 
+Recover the tree without changing its structure.
+
+ 
+
+Example 1:
+Input: root = [1,3,null,null,2]
+Output: [3,1,null,null,2]
+Explanation: 3 cannot be a left child of 1 because 3 > 1. Swapping 1 and 3 makes the BST valid.
+
+Example 2:
+Input: root = [3,1,4,null,null,2]
+Output: [2,1,4,null,null,3]
+Explanation: 2 cannot be in the right subtree of 3 because 2 < 3. Swapping 2 and 3 makes the BST valid.
+ 
+Constraints:
+The number of nodes in the tree is in the range [2, 1000].
+-231 <= Node.val <= 231 - 1 
+
+Follow up: 
+A solution using O(n) space is pretty straight-forward. 
+Could you devise a constant O(1) space solution?
+
+
+// My solution
+// Follow-up not handled
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, val=0, left=None, right=None):
+#         self.val = val
+#         self.left = left
+#         self.right = right
+
+class Solution:
+    def recoverTree(self, root: Optional[TreeNode]) -> None:
+        """
+        Do not return anything, modify root in-place instead.
+        """
+        # Get nodes in a sorted order using inorder traversal of BST
+        def inorder(root): return inorder(root.left) + [root.val] + inorder(root.right) if root else []
+        nodes = inorder(root)
+        print(nodes)
+        
+        # Get values of two swapped nodes in one pass
+        # A node is in wrong place, if a[i] > a[i+1]
+        # This condition becomes true exactly twice
+        # For first time index of node in wrong pos is i
+        # For second time index of node in wrong pos is i + 1
+        # Use a boolean to track if it is the first occurance or second
+        i, p1, i1, p2, first = 0, -1, -1, -1, True
+        for i in range(len(nodes)-1):
+            if nodes[i] > nodes[i+1]:
+                if first: 
+                    p1 = nodes[i]
+                    i1 = i
+                    first = False
+                else:
+                    p2 = nodes[i+1]
+        # in corner casses the second occurance does not occur
+        # during these cases, the second node is the next node of p1
+        if p2 == -1: p2 = nodes[i1 + 1]
+        print(p1, p2)
+        
+        # Traverse the tree again and reset the two values
+        def modify(root, swaps, p1, p2):
+            if not root: return 
+            if root.val == p1:
+                root.val = p2
+                swaps -= 1
+            elif root.val == p2:
+                root.val = p1
+                swaps -= 1  
+            if swaps == 0: return
+            modify(root.left, swaps, p1, p2)
+            modify(root.right, swaps, p1, p2)    
+        modify(root, 2, p1, p2)
+
+result ->
+Submission Detail
+1919 / 1919 test cases passed.
+Status: Accepted
+Runtime: 73 ms (90%)
+Memory Usage: 14.3 MB (28%) // low, as using O(n) space
